@@ -17,7 +17,7 @@ Mesh Mesh::copy() {
 	return copiedMesh;
 }
 
-void Mesh::addVertex(Vertex& v) {
+void Mesh::addVertex(Vertex v) {
 	vertices.push_back(v);	
 	maxXYZ.x = glm::max(maxXYZ.x, v.position.x);
 	maxXYZ.y = glm::max(maxXYZ.y, v.position.y);
@@ -94,7 +94,7 @@ void Mesh::localRotateMesh(float radians, glm::vec3 rotate) {
 	updateVerticesFromTransform();
 }
 
-void Mesh::tranlateMesh(glm::vec3 translate) {
+void Mesh::translateMesh(glm::vec3 translate) {
 	transform = glm::translate(transform, translate);
 	updateVerticesFromTransform();
 }

@@ -30,14 +30,12 @@ void GLFWCallback::key_callback(GLFWwindow* window, int key, int scancode, int a
 			default: { break; }
 		}
 	}
-	std::cout << "key " << std::endl;
 };
 
 void GLFWCallback::cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
 	lastMouseXpos = xpos;
 	lastMouseYpos = ypos;
 	sharedData->camera->updateMouse(glm::vec2(xpos, ypos));
-	std::cout << "pos " << std::endl;
 };
 
 void GLFWCallback::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {

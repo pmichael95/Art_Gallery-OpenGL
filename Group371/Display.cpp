@@ -11,32 +11,27 @@ Display::Display(std::string title, int width, int height, bool enableDebugging)
 	}
 
 
-	// TODO: remove when done testing
-	Mesh m1;
-	m1.addVertex(Vertex(glm::vec3(0.5f, 0, 0.5f)));
-	m1.addVertex(Vertex(glm::vec3(-0.5f, 0, 0.5f)));
-	m1.addVertex(Vertex(glm::vec3(-0.5f, 0, -0.5f)));
-	m1.addVertex(Vertex(glm::vec3(0.5f, 0, -0.5f)));
-	m1.addIndices(glm::ivec3(2, 1, 0));
-	m1.addIndices(glm::ivec3(3, 2, 0));
-	Mesh m2 = m1.copy();
-	m2.localRotateMesh(glm::radians(-90.0), glm::vec3(0, 0, 1));
-	Mesh m3 = m1.copy();
-	m3.localRotateMesh(glm::radians(90.0), glm::vec3(1, 0, 0));
+	Cube c;
+	c.translateMesh(glm::vec3(0.5f, 0.5f, 0.5f));
+	c.localRotateMesh(glm::radians(45.0), glm::vec3(1, 1, 1));
 
-	/* EXPERIMENT WITH THE CODE BELOW TO UNDERSTAND LOCAL VS. NOT LOCAL */
-	//m1.tranlateMesh(glm::vec3(4, 0, 0));
-	//m1.rotateMesh(glm::radians(45.0), glm::vec3(0, 1, 0));
-	//m1.localRotateMesh(glm::radians(45.0), glm::vec3(0, 1, 0));
+	Plane p;
+	p.translateMesh(glm::vec3(5, 0, 5));
+	p.localScaleMesh(glm::vec3(5, 1, 5));
+	p.localRotateMesh(glm::radians(45.0), glm::vec3(0, 1, 0));
 
-	//m1.tranlateMesh(glm::vec3(4, 0, 0));
-	//m1.scaleMesh(glm::vec3(4, 1, 1));
-	//m1.localScaleMesh(glm::vec3(4, 1, 1));
-	/*************/
+	Circle cc;
 
-	meshManager.addMesh(&m1);
-	meshManager.addMesh(&m2);
-	meshManager.addMesh(&m3);
+	Cone cy(20);
+	//cy.translateMesh(glm::vec3(2, 2, 2));
+	//cy.rotateMesh(glm::radians(-45.0), glm::vec3(0, 1, 0));
+	//cy.localScaleMesh(glm::vec3(2, 10, 2));
+
+	//meshManager.addMesh(&c);
+	//meshManager.addMesh(&p);
+	//meshManager.addMesh(&cc);
+	meshManager.addMesh(&cy);
+
 
 	// TODO: procedurally generate all the mesh data here
 	// generateEnivorment();
@@ -153,7 +148,7 @@ void Display::initGL(std::string windowName, int width, int height) {
 
 	// Enable face culling
 	// TODO: should we enable this?
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
 }

@@ -14,6 +14,12 @@
 #include "Shader.h"
 #include "SharedData.h"
 
+#include "Cube.h"
+#include "Plane.h"
+#include "Circle.h"
+#include "Cylinder.h"
+#include "Cone.h"
+
 
 class Display {
 public:

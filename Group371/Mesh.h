@@ -20,7 +20,7 @@ public:
 	Mesh();
 	~Mesh();
 	Mesh copy();
-	void addVertex(Vertex& v);
+	void addVertex(Vertex v);
 	void addIndices(glm::ivec3 tri);
 	const inline std::vector<Vertex>& getVertices() {return vertices;}
 	const inline std::vector<int>& getIndices() {return indices;}
@@ -30,7 +30,7 @@ public:
 	void localScaleMesh(glm::vec3 scale);
 	void rotateMesh(float radians, glm::vec3 rotate);
 	void localRotateMesh(float radians, glm::vec3 rotate);
-	void tranlateMesh(glm::vec3 translate);
+	void translateMesh(glm::vec3 translate);
 protected:
 	void updateVerticesFromTransform();
 	void recalculateCenter();
