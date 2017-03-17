@@ -13,19 +13,22 @@ Cone::Cone(int sides) {
 	float rotationAngle = glm::radians(360.0f) / sides;
 	Vertex originTop(glm::vec3(0,0.5,0));
 	Vertex originBottom(glm::vec3(0, -0.5, 0));
+
 	Vertex rotationPoint(glm::vec3(0.5, -0.5, 0));
 
-	addVertex(originTop);
-	addVertex(originBottom);
-	int size = 2;
+	int size = 0;
 	for (int i = 0; i < sides; i++) {
 		Vertex nextRotationPoint;
 		nextRotationPoint.position = glm::rotateY(rotationPoint.position, rotationAngle);
+		addVertex(originBottom);
 		addVertex(rotationPoint);
 		addVertex(nextRotationPoint);
-		addIndices(glm::ivec3(1, size, size + 1));
+		addIndices(glm::ivec3(size, size + 1, size + 2));
+		size += 3;
+		addVertex(rotationPoint);
+		addVertex(nextRotationPoint);
 		addVertex(originTop);
-		addIndices(glm::ivec3(size, size + 1, 0));
+		addIndices(glm::ivec3(size, size + 1, size + 2));
 		size += 3;
 		rotationPoint = nextRotationPoint;
 	}

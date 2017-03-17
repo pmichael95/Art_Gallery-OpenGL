@@ -78,7 +78,6 @@ void Mesh::localScaleMesh(glm::vec3 scale) {
 
 void Mesh::rotateMesh(float radians, glm::vec3 rotate) {
 	transform = glm::rotate(transform, radians, rotate);
-	transformNormals(transform);
 	updateVerticesFromTransform();
 }
 
@@ -90,7 +89,6 @@ void Mesh::localRotateMesh(float radians, glm::vec3 rotate) {
 	rotationMatrix = glm::rotate(rotationMatrix, radians, rotate);
 	rotationMatrix = glm::translate(rotationMatrix, -glm::vec3(vecToOrigin));
 	transform = rotationMatrix * transform;
-	transformNormals(transform);
 	updateVerticesFromTransform();
 }
 
@@ -114,6 +112,7 @@ void Mesh::updateVerticesFromTransform() {
 		minXYZ.z = glm::min(minXYZ.z, v.position.z);
 	}
 	recalculateCenter();
+	recalculateNormals();
 	transform = glm::mat4();
 }
 
@@ -126,7 +125,7 @@ void Mesh::recalculateCenter() {
 	);
 }
 
-void Mesh::transformNormals(glm::mat4& transform) {
+void Mesh::recalculateNormals() {
 	for (int i = 0; i < indiceGroups.size(); i++) {
 		glm::ivec3 tri = indiceGroups.at(i);
 		Vertex& v1 = vertices.at(tri.x);
@@ -135,7 +134,7 @@ void Mesh::transformNormals(glm::mat4& transform) {
 
 		glm::vec3 d1 = v1.position - v2.position;
 		glm::vec3 d2 = v1.position - v3.position;
-		glm::vec3 normal = glm::vec3(transform * glm::vec4(glm::cross(d1, d2), 1.0));
+		glm::vec3 normal = glm::normalize(glm::vec3(glm::vec4(glm::cross(d1, d2), 1.0)));
 		v1.normal = normal;
 		v2.normal = normal;
 		v3.normal = normal;

@@ -34,7 +34,7 @@ public:
 protected:
 	void updateVerticesFromTransform();
 	void recalculateCenter();
-	void transformNormals(glm::mat4& transform);
+	void recalculateNormals();
 	std::vector<Vertex> vertices;
 	std::vector<int> indices;
 	std::vector<glm::ivec3> indiceGroups;
