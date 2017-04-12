@@ -150,6 +150,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Circle.h" />
+    <ClInclude Include="Color.h" />
     <ClInclude Include="Cone.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Cylinder.h" />
@@ -157,10 +158,16 @@
     <ClInclude Include="FileReader.h" />
     <ClInclude Include="GLFWCallback.h" />
     <ClInclude Include="GLFWCallbackHandler.h" />
+    <ClInclude Include="Hallway.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="MeshManager.h" />
     <ClInclude Include="MVPTransform.h" />
+    <ClInclude Include="Painting.h" />
+    <ClInclude Include="Pedestal.h" />
     <ClInclude Include="Plane.h" />
+    <ClInclude Include="RandomShape.h" />
+    <ClInclude Include="Room.h" />
+    <ClInclude Include="RoomGen.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SharedData.h" />
     <ClInclude Include="targetver.h" />
@@ -176,10 +183,16 @@
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="GLFWCallback.cpp" />
     <ClCompile Include="GLFWCallbackHandler.cpp" />
+    <ClCompile Include="Hallway.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MeshManager.cpp" />
+    <ClCompile Include="Painting.cpp" />
+    <ClCompile Include="Pedestal.cpp" />
     <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="RandomShape.cpp" />
+    <ClCompile Include="Room.cpp" />
+    <ClCompile Include="RoomGen.cpp" />
     <ClCompile Include="Shader.cpp" />
   </ItemGroup>
   <ItemGroup>

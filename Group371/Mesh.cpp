@@ -45,9 +45,28 @@ void Mesh::addIndices(glm::ivec3 tri) {
 	v1.normal = normal;
 	v2.normal = normal;
 	v3.normal = normal;
-
 }
 
+void Mesh::addVertices(const std::vector<Vertex> vertices) {
+	for (Vertex v : vertices) {
+		addVertex(v);
+	}
+}
+
+void Mesh::addIndices(const std::vector<int> indices) {
+	for (int i = 0; i < indices.size(); i += 3) {
+		addIndices(glm::vec3(indices.at(i), indices.at(i + 1), indices.at(i + 2)));
+	}
+}
+
+void Mesh::setColor(glm::vec4 color) {
+	std::vector<Vertex> newVertices;
+	for (std::vector<Vertex>::iterator it = vertices.begin(); it != vertices.end(); ++it) {
+		(*it).color = color;
+		newVertices.push_back(*it);
+	}
+	vertices = newVertices;
+}
 
 int Mesh::vertexBufferSize() {
 	return vertices.size() * sizeof(Vertex);
@@ -57,7 +76,10 @@ int Mesh::indexBufferSize() {
 	return indices.size() * sizeof(int);
 }
 
-
+void Mesh::reset() {
+	vertices.clear();
+	indices.clear();
+}
 
 void Mesh::scaleMesh(glm::vec3 scale) {
 	transform = glm::scale(transform, scale);
@@ -141,6 +163,13 @@ void Mesh::recalculateNormals() {
 	}
 }
 
+bool Mesh::operator==(const Mesh& other) const {
+	return vertices == other.vertices && indices == other.indices;
+}
+
+bool Mesh::operator!=(const Mesh& other) const {
+	return !(*this == other);
+}
 
 GridMesh::GridMesh() {
 	// Size should be a power of 2

@@ -13,9 +13,14 @@ public:
 	MeshManager();
 	~MeshManager();
 	void addMesh(Mesh* m);
+	void addMesh(Mesh m);
+	void removeMesh(Mesh* m);
+	void clearMeshes();
 	void computeMergedMesh();
+	void computeMergedMeshCopies();
 	Mesh finalMesh;
 	std::vector<Mesh*> meshes;
+	std::vector<Mesh> meshcopies;
 private:
 	int verticeCount;
 	int indiceCount;

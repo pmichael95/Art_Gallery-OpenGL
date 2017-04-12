@@ -1,4 +1,6 @@
 #include "Display.h"
+#include "RoomGen.h"
+#include "Painting.h"
 
 Display::Display(std::string title, int width, int height, bool enableDebugging) {
 	debugModeEnabled = enableDebugging;
@@ -11,10 +13,11 @@ Display::Display(std::string title, int width, int height, bool enableDebugging)
 	}
 
 
-	Cube c;
-	c.translateMesh(glm::vec3(0.5f, 0.5f, 0.5f));
-	c.localRotateMesh(glm::radians(45.0), glm::vec3(1, 1, 1));
+	//Cube c;
+	//c.translateMesh(glm::vec3(0.5f, 0.5f, 0.5f));
+	//c.localRotateMesh(glm::radians(45.0), glm::vec3(1, 1, 1));
 
+	// Random change
 	Plane p;
 	p.translateMesh(glm::vec3(5, 0, 5));
 	p.localScaleMesh(glm::vec3(5, 1, 5));
@@ -27,10 +30,71 @@ Display::Display(std::string title, int width, int height, bool enableDebugging)
 	//cy.rotateMesh(glm::radians(-45.0), glm::vec3(0, 1, 0));
 	//cy.localScaleMesh(glm::vec3(2, 10, 2));
 
+	
+
+
+	RandomShape rs;
+	RandomShape rs1;
+	RandomShape rs2;
+	RandomShape rs3;
+	//rs.translateMesh(glm::vec3(2.0f, 2.0f, 2.0f));
+	//rs.localRotateMesh(glm::radians(45.0), glm::vec3(1, 1, 1));
+
 	//meshManager.addMesh(&c);
 	//meshManager.addMesh(&p);
 	//meshManager.addMesh(&cc);
-	meshManager.addMesh(&cy);
+	//meshManager.addMesh(&cy);
+
+	
+	rs.setColor(glm::vec4(0.7f, 0.4f, 0.0f, 1.0f));
+
+	rs.setColor(glm::vec4(ORANGE, 1.0f));
+
+	rs.translateMesh(glm::vec3(15.0f, 3.0f, 15.0f));
+	//meshManager.addMesh(&rs);
+	rs1.setColor(glm::vec4(PURPLE, 1.0f));
+	rs1.translateMesh(glm::vec3(15.0f, 3.0f, -15.0f));
+	//meshManager.addMesh(&rs1);
+	rs2.setColor(glm::vec4(CYAN, 1.0f));
+	rs2.translateMesh(glm::vec3(-15.0f, 3.0f, 15.0f));
+	//meshManager.addMesh(&rs2);
+	rs3.setColor(glm::vec4(LIME, 1.0f));
+	rs3.translateMesh(glm::vec3(-15.0f, 3.0f, -15.0f));
+	//meshManager.addMesh(&rs3);
+
+	// --- PEDESTAL
+	Pedestal ped = Pedestal();
+	ped.setAllColor(glm::vec4(0.66f));
+	//ped.setBaseColor(glm::vec4(0.66f));
+	//ped.setTopColor(glm::vec4(0.86f));
+	meshManager.addMesh(&ped);
+	
+
+	Cube c;
+	c.setTopColor(glm::vec4(BEIGE, 1.0f));
+	c.setBottomColor(glm::vec4(DARKORANGE, 1.0f));
+	c.setLeftColor(glm::vec4(LAVENDER, 1.0f));
+	c.setRightColor(glm::vec4(LAVENDER, 1.0f));
+	c.setBackColor(glm::vec4(FORESTGREEN, 1.0f));
+	c.setFrontColor(glm::vec4(BLUE, 1.0f));
+	c.localScaleMesh(glm::vec3(2.0f, 2.0f, 2.0f));
+	c.translateMesh(glm::vec3(5.0f, 0.0f, 5.0f));
+	//addMesh(&c);
+	//c.setFront(false);
+	//meshManager.addMesh(&c);
+
+	Room r(7, 4, 3, 0, 0);
+	r.setLeftOpening(1.5f, 3);
+	r.setRightOpening(3, 4.5f);
+	r.setBackOpening(0, 1);
+	r.setFrontOpening(2, 3);
+	//meshManager.addMesh(&r);
+
+	RoomGen rooms;
+	meshManager.addMesh(&rooms);
+
+	//HallwayGen hallways;
+	//meshManager.addMesh(&hallways);
 
 
 	// TODO: procedurally generate all the mesh data here
@@ -148,9 +212,10 @@ void Display::initGL(std::string windowName, int width, int height) {
 
 	// Enable face culling
 	// TODO: should we enable this?
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
+	//glPointSize(30);
 }
 
 void Display::initCamera() {

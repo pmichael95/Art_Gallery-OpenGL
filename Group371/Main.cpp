@@ -2,6 +2,11 @@
 #include "GLFWCallbackHandler.h"
 
 int main() {
+
+	//Setup randomizer and seed
+	srand(time(0));
+
+	//Title Display
 	Display display("Art Gallery", 800, 800, true);
 
 	// Set the shader for this diplay
@@ -17,6 +22,7 @@ int main() {
 
 	// Main game loop
 	while (!display.isClosed()) {
+		glPointSize(5);
 		//draw
 		display.update();
 		display.clear(0.0f, 0.0f, 1.0f, 1.0f);

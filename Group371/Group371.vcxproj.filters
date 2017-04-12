@@ -31,6 +31,19 @@
     <Filter Include="Source Files\shapes">
       <UniqueIdentifier>{37580aa3-67dc-473b-8b96-945b2c6797d5}</UniqueIdentifier>
     </Filter>
+
+    <Filter Include="Source Files\Art Pieces">
+      <UniqueIdentifier>{f87efdef-1af8-4221-980f-c94c13b2e21f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Art Pieces">
+      <UniqueIdentifier>{288b6d29-ae57-4e03-8243-e420599a2a67}</UniqueIdentifier>
+
+    <Filter Include="Header Files\Building">
+      <UniqueIdentifier>{8aad1729-c25c-4a9d-bfde-3eaabfbc6acc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Building">
+      <UniqueIdentifier>{cc8f26d0-e8dd-4fbb-aa61-fcb4778f95b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -81,8 +94,26 @@
     <ClInclude Include="Circle.h">
       <Filter>Header Files\shapes</Filter>
     </ClInclude>
+    <ClInclude Include="RandomShape.h">
+      <Filter>Header Files\shapes</Filter>
+    </ClInclude>
     <ClInclude Include="Cone.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\shapes</Filter>
+    </ClInclude>
+
+    <ClInclude Include="Pedestal.h">
+      <Filter>Header Files\Art Pieces</Filter>
+    <ClInclude Include="Color.h">
+      <Filter>Header Files\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Room.h">
+      <Filter>Header Files\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="RoomGen.h">
+      <Filter>Header Files\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="Hallway.h">
+      <Filter>Header Files\Building</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,8 +156,25 @@
     <ClCompile Include="Circle.cpp">
       <Filter>Source Files\shapes</Filter>
     </ClCompile>
+    <ClCompile Include="RandomShape.cpp">
+      <Filter>Source Files\shapes</Filter>
+    </ClCompile>
     <ClCompile Include="Cone.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\shapes</Filter>
+    </ClCompile>
+
+    <ClCompile Include="Pedestal.cpp">
+      <Filter>Source Files\Art Pieces</Filter>
+
+    <ClCompile Include="Room.cpp">
+      <Filter>Source Files\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="RoomGen.cpp">
+      <Filter>Source Files\Building</Filter>
+    </ClCompile>
+    <ClCompile Include="Hallway.cpp">
+      <Filter>Source Files\Building</Filter>
+
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

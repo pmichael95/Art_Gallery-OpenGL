@@ -45,6 +45,12 @@ struct Vertex {
 		this->normal = glm::vec3(0, 0, 0);
 	};
 
+	bool operator==(const Vertex& other) const {
+		return position == other.position && color == other.color && normal == other.normal;
+	}
+	bool operator!=(const Vertex& other) const {
+		return !(*this == other);
+	}
 };
 
 // Convert a 3 float  string to a vertex

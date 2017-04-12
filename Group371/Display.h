@@ -19,6 +19,11 @@
 #include "Circle.h"
 #include "Cylinder.h"
 #include "Cone.h"
+#include "RandomShape.h"
+#include "Pedestal.h"
+#include "Color.h"
+#include "Painting.h"
+
 
 
 class Display {
