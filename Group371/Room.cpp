@@ -1,6 +1,10 @@
 #include "Room.h"
+#include "Painting.h"
+#include "Color.h"
+#include "Pedestal.h"
+#include <iostream>
 
-Room::Room(float length, float width, float height, float x, float y) : width(width), length(length), height(height), position(x, y){
+Room::Room(std::unordered_map<std::string, Texture>* textureMap, float length, float width, float height, float x, float y) : width(width), length(length), height(height), position(x, y), textureMap(textureMap){
 	center.setSides(false, false, true, true, false, false);
 	setColors(center);
 	center.localScaleMesh(glm::vec3(1.0f-sides_size, 1.0f, 1.0f-sides_size));
@@ -158,7 +162,8 @@ void Room::setLeftOpening(float from, float to){
 		return;
 
 	Mesh mesh = getXOpening(from, to, true);
-	leftOpening = true;
+	hasLeftOpen = true;
+	leftOpening = glm::vec2(from, to);
 
 	left->reset();
 	left->addVertices(mesh.getVertices());
@@ -174,7 +179,8 @@ void Room::setRightOpening(float from, float to){
 		return;
 
 	Mesh mesh = getXOpening(from, to, false);
-	rightOpening = true;
+	hasRightOpen = true;
+	rightOpening = glm::vec2(from, to);
 
 	right->reset();
 	right->addVertices(mesh.getVertices());
@@ -190,7 +196,8 @@ void Room::setFrontOpening(float from, float to){
 		return;
 
 	Mesh mesh = getYOpening(from, to, true);
-	frontOpening = true;
+	hasFrontOpen = true;
+	frontOpening = glm::vec2(from, to);
 
 	front->reset();
 	front->addVertices(mesh.getVertices());
@@ -206,7 +213,8 @@ void Room::setBackOpening(float from, float to){
 		return;
 
 	Mesh mesh = getYOpening(from, to, false);
-	backOpening = true;
+	hasBackOpen = true;
+	backOpening = glm::vec2(from, to);
 
 	back->reset();
 	back->addVertices(mesh.getVertices());
@@ -217,12 +225,17 @@ void Room::setBackOpening(float from, float to){
 }
 
 void Room::setColors(Cube& cube) {
-	cube.setTopColor(glm::vec4(BEIGE, 1.0f));
-	cube.setBottomColor(glm::vec4(DARKORANGE, 1.0f));
-	cube.setLeftColor(glm::vec4(LAVENDER, 1.0f));
-	cube.setRightColor(glm::vec4(LAVENDER, 1.0f));
-	cube.setBackColor(glm::vec4(FORESTGREEN, 1.0f));
-	cube.setFrontColor(glm::vec4(BLUE, 1.0f));
+	int mix = 80;
+	float repeat = 2;
+	Material m = MATERIAL_EMERALD;
+	Material m2 = MATERIAL_CHROME;
+
+	cube.setFaceTexture(CubeFace::front, textureMap->at("wall"), repeat, repeat);
+	cube.setFaceTexture(CubeFace::back, textureMap->at("wall"), repeat, repeat);
+	cube.setFaceMix(CubeFace::left, m, textureMap->at("wall"), repeat, repeat, mix);
+	cube.setFaceMix(CubeFace::right, m2, textureMap->at("wall"), repeat, repeat, mix);
+	cube.setFaceTexture(CubeFace::bottom, textureMap->at("floor"), 8, 16);
+	cube.setFaceTexture(CubeFace::top, textureMap->at("wall"));
 }
 
 const glm::vec2 Room::getPosition() {
@@ -244,4 +257,177 @@ glm::vec2 Room::getTopLeft() {
 
 glm::vec2 Room::getBottomRight() {
 	return glm::vec2(getPosition().x + getLength() / 2.0f, getPosition().y - getWidth() / 2.0f);
+}
+
+void Room::addArtPieces() {
+	//vars to keep edges empty
+	float lrSpace = width * 0.05f;
+	float fbSpace = length * 0.05f;
+
+	//min-max sizes
+	float minPaintingHeight = height / 3.0f;
+	float maxPaintingHeight = height / 2.0f;
+	float minPaintingLength = 1.0f;
+	float maxPaintingLength = 2.25f;
+
+	float pedestalHeight = 2.5f;
+	float pedestalWidth = 0.4f;
+	float pedestalLength = 0.4f;
+
+	//left wall
+	std::vector<glm::vec2> openings; //empty space on wall
+	if (hasLeftOpening()) {
+		openings.push_back(glm::vec2(lrSpace, leftOpening.x - lrSpace));
+		openings.push_back(glm::vec2(leftOpening.y + lrSpace, length - lrSpace));
+	}
+	else {
+		openings.push_back(glm::vec2(lrSpace, length - lrSpace));
+	}
+	for (glm::vec2 openarea : openings) {
+		std::cout << "openspace: " << openarea.x << "-" << openarea.y << std::endl;
+		while (openarea.y - openarea.x >= minPaintingLength) {
+			float openingLength = openarea.y - openarea.x;
+			float maxLength = openingLength >= maxPaintingLength ? maxPaintingLength : openingLength;
+			float length = minPaintingLength + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxLength - minPaintingLength)));
+			float height = minPaintingHeight + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxPaintingHeight - minPaintingHeight)));
+			float width = 1.0f;
+
+			Painting* p = new Painting(textureMap);
+			
+			objects.push_back(p);
+			
+			p->localScaleMesh(glm::vec3(length / this->length, height / this->height, width / this->width));
+			p->localRotateMesh(glm::radians(-90.0f), glm::vec3(0, 1, 0));
+			p->translateMesh(glm::vec3(0.4999f - p->FRAME_WIDTH/2.0f/this->length, 0.1f, -0.5f + (openarea.x + length / 2.0f) / this->length));
+
+			openarea.x += length + 0.5f;
+
+			manager.addMesh(p);
+
+			std::cout << "Added painting of length: " << length << " at " << openarea.x + length / 2.0f << std::endl;
+
+			//if we can add a pedestal and another painting
+			if (openarea.y - openarea.x - pedestalLength - 0.5f >= minPaintingLength) {
+				Pedestal* ped = new Pedestal();
+				Material m = MATERIAL_OBSIDIAN;
+				ped->setMaterial(m);
+				objects.push_back(ped);
+
+				ped->localScaleMesh(glm::vec3(pedestalWidth / this->width, pedestalHeight / this->height, pedestalLength / this->length));
+				ped->translateMesh(glm::vec3(0.4999f - pedestalWidth / 2.0f / this->length, -pedestalHeight/4.0f/this->height, -0.5f + (openarea.x + pedestalLength / 2.0f) / this->length));
+
+				openarea.x += pedestalLength + 0.5f;
+
+				manager.addMesh(ped);
+			}
+		}
+	}
+
+	//right wall
+	openings.clear();
+	if (hasRightOpening()) {
+		openings.push_back(glm::vec2(lrSpace, rightOpening.x - lrSpace));
+		openings.push_back(glm::vec2(rightOpening.y + lrSpace, length - lrSpace));
+	}
+	else {
+		openings.push_back(glm::vec2(lrSpace, length - lrSpace));
+	}
+	for (glm::vec2 openarea : openings) {
+		std::cout << "openspace: " << openarea.x << "-" << openarea.y << std::endl;
+		while (openarea.y - openarea.x >= minPaintingLength) {
+			float openingLength = openarea.y - openarea.x;
+			float maxLength = openingLength >= maxPaintingLength ? maxPaintingLength : openingLength;
+			float length = minPaintingLength + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxLength - minPaintingLength)));
+			float height = minPaintingHeight + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxPaintingHeight - minPaintingHeight)));
+			float width = 1.0f;
+
+			Painting* p = new Painting(textureMap);
+			objects.push_back(p);
+
+			p->localScaleMesh(glm::vec3(length / this->length, height / this->height, width / this->width));
+			p->localRotateMesh(glm::radians(90.0f), glm::vec3(0, 1, 0));
+			p->translateMesh(glm::vec3(-0.4999f + p->FRAME_WIDTH / 2.0f / this->length, 0.1f, -0.5f + (openarea.x + length / 2.0f) / this->length));
+
+			openarea.x += length + 0.5f;
+
+			manager.addMesh(p);
+
+			std::cout << "Added painting of length: " << length << " at " << openarea.x + length / 2.0f << std::endl;
+		}
+	}
+
+	//front wall
+	openings.clear();
+	if (hasFrontOpening()) {
+		openings.push_back(glm::vec2(fbSpace, frontOpening.x - fbSpace));
+		openings.push_back(glm::vec2(frontOpening.y + fbSpace, width - fbSpace));
+	}
+	else {
+		openings.push_back(glm::vec2(fbSpace, width - fbSpace));
+	}
+	for (glm::vec2 openarea : openings) {
+		std::cout << "openspace: " << openarea.x << "-" << openarea.y << std::endl;
+		while (openarea.y - openarea.x >= minPaintingLength) {
+			float openingLength = openarea.y - openarea.x;
+			float maxLength = openingLength >= maxPaintingLength ? maxPaintingLength : openingLength;
+			float length = minPaintingLength + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxLength - minPaintingLength)));
+			float height = minPaintingHeight + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxPaintingHeight - minPaintingHeight)));
+			float width = 1.0f;
+
+			Painting* p = new Painting(textureMap);
+			objects.push_back(p);
+
+			p->localScaleMesh(glm::vec3(width / this->width, height / this->height, length / this->length));
+			p->localRotateMesh(glm::radians(180.0f), glm::vec3(0, 1, 0));
+			p->translateMesh(glm::vec3(-0.5f + (openarea.x + length / 2.0f) / this->width, 0.1f, 0.4999f - p->FRAME_WIDTH/2.0f / this->width));
+
+			openarea.x += length + 0.5f;
+
+			manager.addMesh(p);
+
+			std::cout << "Added painting of length: " << length << " at " << openarea.x + length / 2.0f << std::endl;
+		}
+	}
+
+	//back wall
+	openings.clear();
+	if (hasBackOpening()) {
+		openings.push_back(glm::vec2(fbSpace, backOpening.x - fbSpace));
+		openings.push_back(glm::vec2(backOpening.y + fbSpace, width - fbSpace));
+	}
+	else {
+		openings.push_back(glm::vec2(fbSpace, width - fbSpace));
+	}
+	for (glm::vec2 openarea : openings) {
+		std::cout << "openspace: " << openarea.x << "-" << openarea.y << std::endl;
+		while (openarea.y - openarea.x >= minPaintingLength) {
+			float openingLength = openarea.y - openarea.x;
+			float maxLength = openingLength >= maxPaintingLength ? maxPaintingLength : openingLength;
+			float length = minPaintingLength + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxLength - minPaintingLength)));
+			float height = minPaintingHeight + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (maxPaintingHeight - minPaintingHeight)));
+			float width = 1.0f;
+
+			Painting* p = new Painting(textureMap);
+			objects.push_back(p);
+
+			p->localScaleMesh(glm::vec3(width / this->width, height / this->height, length / this->length));
+			//p->localRotateMesh(glm::radians(180.0f), glm::vec3(0, 1, 0));
+			p->translateMesh(glm::vec3(-0.5f + (openarea.x + length / 2.0f) / this->width, 0.1f, -0.4999f + p->FRAME_WIDTH/2.0f / this->width));
+
+			openarea.x += length + 0.5f;
+
+			manager.addMesh(p);
+
+			std::cout << "Added painting of length: " << length << " at " << openarea.x + length / 2.0f << std::endl;
+		}
+	}
+
+	//center
+	Pedestal* ped = new Pedestal();
+	ped->localScaleMesh(glm::vec3(0.25f, 0.25f, 0.25f));
+	ped->translateMesh(glm::vec3(0.0f, -0.5f, 0.0f));
+	manager.addMesh(ped);
+	objects.push_back(ped);
+
+	onChange();
 }

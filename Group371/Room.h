@@ -1,9 +1,12 @@
 #pragma once
 #include "Mesh.h"
 #include "Cube.h"
+#include <unordered_map>
+#include "Texture.h"
+
 class Room : public Mesh {
 public:
-	Room(float length, float width, float height = 3.0f, float x = 0, float y = 0);
+	Room(std::unordered_map<std::string, Texture>* textureMap, float length, float width, float height = 3.0f, float x = 0, float y = 0);
 	~Room();
 
 	bool intersects(Room);
@@ -20,10 +23,12 @@ public:
 	glm::vec2 getTopLeft();
 	glm::vec2 getBottomRight();
 
-	bool hasLeftOpening() { return leftOpening; };
-	bool hasRightOpening() { return rightOpening; };
-	bool hasFrontOpening() { return frontOpening; };
-	bool hasBackOpening() { return backOpening; };
+	bool hasLeftOpening() { return hasLeftOpen; };
+	bool hasRightOpening() { return hasRightOpen; };
+	bool hasFrontOpening() { return hasFrontOpen; };
+	bool hasBackOpening() { return hasBackOpen; };
+
+	void addArtPieces();
 private:
 	Mesh getXOpening(float from, float to, bool isLeft);
 	Mesh getYOpening(float from, float to, bool isFront);
@@ -41,14 +46,17 @@ private:
 	Mesh* front;
 	Mesh* back;
 	Cube center;
+	bool hasLeftOpen, hasRightOpen, hasFrontOpen, hasBackOpen;
+	glm::vec2 leftOpening, rightOpening, frontOpening, backOpening;
 
 	float length, width, height;
 	glm::vec2 position;
 
-	bool leftOpening = false, rightOpening = false, frontOpening = false, backOpening = false;
+	std::vector<Mesh*> objects;
 
 	void setColors(Cube&);
 
-	float sides_size = 0.1f;
+	float sides_size = 0.0000001f;
+	std::unordered_map<std::string, Texture>* textureMap;
 };
 

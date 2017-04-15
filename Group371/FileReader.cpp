@@ -1,6 +1,5 @@
 #include "FileReader.h"
 
-
 //inspired by Shader.h from learnopengl.com
 std::string FileReader::getContents(std::string path) {
 	std::string str;
@@ -28,7 +27,5 @@ std::string FileReader::getContents(std::string path) {
 	{
 		std::cout << "ERROR::FILEREADER::FILE_NOT_SUCCESFULLY_READ:\"" << path << "\"" << std::endl;
 	}
-
 	return str;
 }
-

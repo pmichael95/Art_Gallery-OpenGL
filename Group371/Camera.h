@@ -47,7 +47,7 @@ public:
 	// Update camera's positions of the the mouse's current position on the screen
 	void updateMouse(glm::vec2&);
 	// The current position of where the camera is placed in this world
-	glm::vec3 getCameraPosition() const;
+	const glm::vec3& getCameraPosition() const;
 
 private:
 	void init(PerspectiveCameraParams params);

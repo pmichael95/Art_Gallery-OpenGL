@@ -2,47 +2,48 @@
 #include <iostream>
 #include <utility>
 
-RoomGen::RoomGen()
+RoomGen::RoomGen(std::unordered_map<std::string, Texture>* textureMap, std::vector<Light>* lights) : textureMap(textureMap)
 {
-	int maxSize = 14; // max width/length of a room
-	int minSize = 7; // min width/length of a room
+	int maxSize = 20; // max width/length of a room
+	int minSize = 10; // min width/length of a room
 
 	//dimensions of area to fill with rooms
-	int fillAreaWidth = 40;
-	int fillAreaHeight = 40;
+	int fillAreaWidth = 100;
+	int fillAreaHeight = 100;
 
-	int density = 80; // density of rooms, this is the # of attempts of placing a room.
+	int density = 200; // density of rooms, this is the # of attempts of placing a room.
 	
-	Room* a = new Room(7.0f, 4.0f, 4.0f, -6.5f, 3.0f);
+	/*
+	Room* a = new Room(textureMap, 7.0f, 4.0f, 4.0f, -6.5f, 3.0f);
 	manager.addMesh(a);
 	rooms.push_back(a);
-	Room* b = new Room(6.0f, 3.5f, ROOM_HEIGHT, 4.0f, 2.0f);
+	Room* b = new Room(textureMap, 6.0f, 3.5f, ROOM_HEIGHT, 4.0f, 2.0f);
 	manager.addMesh(b);
 	rooms.push_back(b);
-	Room* c = new Room(10.0f, 6.0f, ROOM_HEIGHT, -8.0f, -8.0f);
+	Room* c = new Room(textureMap, 10.0f, 6.0f, ROOM_HEIGHT, -8.0f, -8.0f);
 	manager.addMesh(c);
 	rooms.push_back(c);
-	Room* d = new Room(5.0f, 5.0f, ROOM_HEIGHT, -13.0f, 11.0f);
+	Room* d = new Room(textureMap, 5.0f, 5.0f, ROOM_HEIGHT, -13.0f, 11.0f);
 	manager.addMesh(d);
 	rooms.push_back(d);
-	Room* e = new Room(7.0f, 4.0f, ROOM_HEIGHT, -15.5f, 3.0f);
+	Room* e = new Room(textureMap, 7.0f, 4.0f, ROOM_HEIGHT, -15.5f, 3.0f);
 	manager.addMesh(e);
 	rooms.push_back(e);
-	Room* f = new Room(8.0f, 8.0f, ROOM_HEIGHT, 17.0f, 14.0f);
+	Room* f = new Room(textureMap, 8.0f, 8.0f, ROOM_HEIGHT, 17.0f, 14.0f);
 	manager.addMesh(f);
 	rooms.push_back(f);
-	Room* g = new Room(4.0f, 5.0f, ROOM_HEIGHT, -8.0f, 11.0f);
+	Room* g = new Room(textureMap, 4.0f, 5.0f, ROOM_HEIGHT, -8.0f, 11.0f);
 	manager.addMesh(g);
 	rooms.push_back(g);
-	Room* h = new Room(8.0f, 8.0f, ROOM_HEIGHT, 17.0f, -14.0f);
+	Room* h = new Room(textureMap, 8.0f, 8.0f, ROOM_HEIGHT, 17.0f, -14.0f);
 	manager.addMesh(h);
 	rooms.push_back(h);
-	Room* j = new Room(16.0f, 12.0f, ROOM_HEIGHT, 19.0f, -30.0f);
+	Room* j = new Room(textureMap, 16.0f, 12.0f, ROOM_HEIGHT, 19.0f, -30.0f);
 	manager.addMesh(j);
 	rooms.push_back(j);
-	Room* k = new Room(12.0f, 6.0f, ROOM_HEIGHT, 34.0f, -30.0f);
+	Room* k = new Room(textureMap, 12.0f, 6.0f, ROOM_HEIGHT, 34.0f, -30.0f);
 	manager.addMesh(k);
-	rooms.push_back(k);
+	rooms.push_back(k);*/
 
 	for (int i = 0; i < density; i++) {
 		//room dimensions
@@ -54,7 +55,10 @@ RoomGen::RoomGen()
 		int y = rand() % fillAreaHeight - fillAreaHeight/2.0f;
 
 		//init new room
-		Room* newRoom = new Room(length, width, ROOM_HEIGHT, x, y);
+		Room* newRoom = new Room(textureMap, length, width, ROOM_HEIGHT, x, y);
+		Light light = LIGHT_DISTANCE_41;
+		light.position = glm::vec3(x, ROOM_HEIGHT* 1.3f, y);
+		lights->push_back(light);
 
 		//check if intersects with any other
 		bool failed = false;
@@ -68,12 +72,15 @@ RoomGen::RoomGen()
 
 		if (!failed) {
 			//add the new room
-			//manager.addMesh(newRoom);
-			//rooms.push_back(newRoom);
+			manager.addMesh(newRoom);
+			rooms.push_back(newRoom);
 		}
 	}
 
 	addHallways();
+	for (Room* r : rooms) {
+		r->addArtPieces();
+	}
 	
 	//generate vertices
 	manager.computeMergedMesh();
@@ -96,7 +103,6 @@ void RoomGen::addHallways() {
 		roomsToConnect.push_back(room);
 	}
 
-
 	//while all rooms are not connected at least once
 	while (roomsToConnect.size() != 0) {
 		//pick a random room
@@ -118,7 +124,7 @@ void RoomGen::addHallways() {
 
 Room* RoomGen::getClosestRoom(Room room) {
 	Room* closest;// (0, 0, 0, INT_MAX, INT_MAX);
-	float closestDistance = getDistanceBetween(room, Room(0,0,0, INT_MAX, INT_MAX));
+	float closestDistance = INT_MAX;
 	for (Room* r : rooms) {
 		//skip self
 		if (*r == room)
@@ -227,7 +233,7 @@ void RoomGen::connectHorizontally(Room* from, Room* to) {
 	float tunnelToTo = tunnelCenterTo + tunnelWidth / 2.0f;
 	to->setBackOpening(tunnelToFrom, tunnelToTo);
 
-	Hallway* hallway = new Hallway(tunnelLength, tunnelWidth, tunnelHeight, true, false, false);
+	Hallway* hallway = new Hallway(textureMap, tunnelLength, tunnelWidth, tunnelHeight, true, false, false);
 	float hallwayX = from->getBottomRight().x + tunnelLength / 2.0f;
 	hallway->translateMesh(glm::vec3(tunnelCenterWorld, 0.0f, hallwayX));
 
@@ -311,7 +317,7 @@ void RoomGen::connectVertically(Room* from, Room* to) {
 	float tunnelToTo = tunnelCenterTo + tunnelWidth / 2.0f;
 	to->setRightOpening(tunnelToFrom, tunnelToTo);
 
-	Hallway* hallway = new Hallway(tunnelLength, tunnelWidth, tunnelHeight, true, false, false);
+	Hallway* hallway = new Hallway(textureMap, tunnelLength, tunnelWidth, tunnelHeight, true, false, false);
 	float hallwayY = from->getTopLeft().y + tunnelLength / 2.0f;
 	hallway->localRotateMesh(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	hallway->translateMesh(glm::vec3(hallwayY, 0.0f, tunnelCenterWorld));
@@ -365,8 +371,8 @@ void RoomGen::connectIndirectlyHorizontalFirst(Room* from, Room* to) {
 	else
 		to->setLeftOpening(tunnelToFrom, tunnelToTo);
 
-	Hallway* hallwayH = new Hallway(hTunnelLength, tunnelWidth, tunnelHeight, false, toIsHigher, !toIsHigher);
-	hallwayH->attach(Hallway(vTunnelLength, tunnelWidth, tunnelHeight, true, false, false));
+	Hallway* hallwayH = new Hallway(textureMap, hTunnelLength, tunnelWidth, tunnelHeight, false, toIsHigher, !toIsHigher);
+	hallwayH->attach(Hallway(textureMap, vTunnelLength, tunnelWidth, tunnelHeight, true, false, false));
 	float hallwayX = from->getBottomRight().x + hTunnelLength / 2.0f;
 	hallwayH->translateMesh(glm::vec3(hTunnelCenterWorld, 0.0f, hallwayX));
 
@@ -401,8 +407,8 @@ void RoomGen::connectIndirectlyVerticalFirst(Room* from, Room* to) {
 	float tunnelToTo = tunnelCenterTo + tunnelWidth / 2.0f;
 	to->setBackOpening(tunnelToFrom, tunnelToTo);
 
-	Hallway* hallwayH = new Hallway(vTunnelLength, tunnelWidth, tunnelHeight, false, !toIsHigher, toIsHigher);
-	hallwayH->attach(Hallway(hTunnelLength, tunnelWidth, tunnelHeight, true, false, false));
+	Hallway* hallwayH = new Hallway(textureMap, vTunnelLength, tunnelWidth, tunnelHeight, false, !toIsHigher, toIsHigher);
+	hallwayH->attach(Hallway(textureMap, hTunnelLength, tunnelWidth, tunnelHeight, true, false, false));
 	float hallwayY = toIsHigher ? from->getTopLeft().y + vTunnelLength / 2.0f : from->getBottomRight().y - vTunnelLength / 2.0f;
 	hallwayH->localRotateMesh(glm::radians(toIsHigher ? 90.0f : 270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	hallwayH->translateMesh(glm::vec3(hallwayY, 0.0f, vTunnelCenterWorld));
@@ -428,4 +434,11 @@ bool RoomGen::areConnected(Room* r1, Room* r2) {
 		}
 	}
 	return false;
+}
+
+glm::vec3 RoomGen::getRandomRoomPosition()
+{
+	int i = rand() % rooms.size();
+	glm::vec2 pos = rooms.at(i)->getPosition();
+	return glm::vec3(pos.y, 0.0f, pos.x);
 }

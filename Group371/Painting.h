@@ -3,11 +3,14 @@
 
 #include "Mesh.h"
 #include "MeshManager.h"
+#include "Cube.h"
+#include "Plane.h"
+#include <unordered_map>
 
 
 class Painting : public Mesh {
 public:
-	Painting();
+	Painting(std::unordered_map<std::string, Texture>* textureMap);
 	~Painting();
 
 	void setBack(bool);		//back picture frame
@@ -15,10 +18,7 @@ public:
 	void setShape(bool);	//shape to be drawn on canvas
 	void addRandomShape(float minusX, float x, float minusY, float y, float z);
 
-	void setBackColor(glm::vec4);
-	void setCanvasColor(glm::vec4);
-	void setShapeColor(glm::vec4);
-
+	const float FRAME_WIDTH = 0.1f;
 private:
 	void onChange();
 
@@ -28,6 +28,7 @@ private:
 	Mesh* canvas;
 	Mesh* shape;
 
+	std::unordered_map<std::string, Texture>* textureMap;
 	std::vector<Mesh*> randomShapes;
 };
 

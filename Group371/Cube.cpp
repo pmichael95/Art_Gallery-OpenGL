@@ -1,5 +1,6 @@
 #include "Cube.h"
 
+
 // Outside faces are culled
 Cube::Cube(bool leftside, bool rightside, bool topside, bool bottomside, bool frontside, bool backside) {
 	left = new Mesh();
@@ -40,6 +41,7 @@ void Cube::setSides(bool left, bool right, bool top, bool bottom, bool front, bo
 	setBack(back);
 }
 
+
 void Cube::onChange() {
 	//recompute mesh on changes
 	manager.computeMergedMesh();
@@ -48,13 +50,36 @@ void Cube::onChange() {
 	indices = computedMesh.getIndices();
 }
 
+Mesh* Cube::faceSwith(CubeFace face) {
+	switch (face) {
+		case CubeFace::left: return left;
+		case CubeFace::right: return right;
+		case CubeFace::top: return top;
+		case CubeFace::bottom: return bottom;
+		case CubeFace::front: return front;
+		case CubeFace::back: return back;
+		default: ;
+	}
+}
+
 void Cube::setLeft(bool b) {
 	left->reset();
 	if (b) {
-		left->addVertex(Vertex(glm::vec3(0.5f, 0.5f, 0.5f))); // top far left
-		left->addVertex(Vertex(glm::vec3(0.5f, 0.5f, -0.5f))); // top near left
-		left->addVertex(Vertex(glm::vec3(0.5f, -0.5f, -0.5f))); // bottom near left
-		left->addVertex(Vertex(glm::vec3(0.5f, -0.5f, 0.5f))); // bottom far left
+
+		Vertex v1 = Vertex(glm::vec3(0.5f, 0.5f, 0.5f)); // top far left
+		Vertex v2 = Vertex(glm::vec3(0.5f, 0.5f, -0.5f)); // top near left
+		Vertex v3 = Vertex(glm::vec3(0.5f, -0.5f, -0.5f)); // bottom near left;
+		Vertex v4 = Vertex(glm::vec3(0.5f, -0.5f, 0.5f)); // bottom far left
+		// Set textures
+		v1.uv = glm::vec2(1, 1);
+		v2.uv = glm::vec2(0, 1);
+		v3.uv = glm::vec2(0, 0);
+		v4.uv = glm::vec2(1, 0);
+
+		left->addVertex(v1); // top far left
+		left->addVertex(v2); // top near left
+		left->addVertex(v3); // bottom near left
+		left->addVertex(v4); // bottom far left
 		left->addIndices(glm::vec3(1, 2, 0));
 		left->addIndices(glm::vec3(0, 2, 3));
 	}
@@ -63,10 +88,23 @@ void Cube::setLeft(bool b) {
 void Cube::setRight(bool b) {
 	right->reset();
 	if (b) {
-		right->addVertex(Vertex(glm::vec3(-0.5f, 0.5f, 0.5f))); // top far right
-		right->addVertex(Vertex(glm::vec3(-0.5f, 0.5f, -0.5f))); // top near right
-		right->addVertex(Vertex(glm::vec3(-0.5f, -0.5f, -0.5f))); // bottom near right
-		right->addVertex(Vertex(glm::vec3(-0.5f, -0.5f, 0.5f))); // bottom far right
+
+
+		Vertex v1 = Vertex(glm::vec3(-0.5f, 0.5f, 0.5f)); // top far right
+		Vertex v2 = Vertex(glm::vec3(-0.5f, 0.5f, -0.5f)); // top near right
+		Vertex v3 = Vertex(glm::vec3(-0.5f, -0.5f, -0.5f)); // bottom near right
+		Vertex v4 = Vertex(glm::vec3(-0.5f, -0.5f, 0.5f)); // bottom far right
+														  
+		v1.uv = glm::vec2(1, 1);
+		v2.uv = glm::vec2(0, 1);
+		v3.uv = glm::vec2(0, 0);
+		v4.uv = glm::vec2(1, 0);
+
+
+		right->addVertex(v1);
+		right->addVertex(v2);
+		right->addVertex(v3);
+		right->addVertex(v4);
 		right->addIndices(glm::vec3(0, 2, 1));
 		right->addIndices(glm::vec3(3, 2, 0));
 	}
@@ -75,10 +113,24 @@ void Cube::setRight(bool b) {
 void Cube::setTop(bool b) {
 	top->reset();
 	if (b) {
-		top->addVertex(Vertex(glm::vec3(0.5f, 0.5f, 0.5f))); // top far right
-		top->addVertex(Vertex(glm::vec3(0.5f, 0.5f, -0.5f))); // top near right
-		top->addVertex(Vertex(glm::vec3(-0.5f, 0.5f, -0.5f))); // top near left
-		top->addVertex(Vertex(glm::vec3(-0.5f, 0.5f, 0.5f))); // top far left
+
+
+		Vertex v1 = Vertex(glm::vec3(0.5f, 0.5f, 0.5f)); // top far right
+		Vertex v2 = Vertex(glm::vec3(0.5f, 0.5f, -0.5f)); // top near right
+		Vertex v3 = Vertex(glm::vec3(-0.5f, 0.5f, -0.5f)); // top near left
+		Vertex v4 = Vertex(glm::vec3(-0.5f, 0.5f, 0.5f)); // top far left
+
+		v1.uv = glm::vec2(1, 1);
+		v2.uv = glm::vec2(0, 1);
+		v3.uv = glm::vec2(0, 0);
+		v4.uv = glm::vec2(1, 0);
+
+
+		top->addVertex(v1);
+		top->addVertex(v2);
+		top->addVertex(v3);
+		top->addVertex(v4);
+
 		top->addIndices(glm::vec3(2, 1, 0));
 		top->addIndices(glm::vec3(3, 2, 0));
 	}
@@ -87,10 +139,21 @@ void Cube::setTop(bool b) {
 void Cube::setBottom(bool b) {
 	bottom->reset();
 	if (b) {
-		bottom->addVertex(Vertex(glm::vec3(0.5f, -0.5f, 0.5f)));// bottom far right
-		bottom->addVertex(Vertex(glm::vec3(0.5f, -0.5f, -0.5f))); // bottom near right
-		bottom->addVertex(Vertex(glm::vec3(-0.5f, -0.5f, -0.5f))); // bottom near left
-		bottom->addVertex(Vertex(glm::vec3(-0.5f, -0.5f, 0.5f))); // bottom far left
+		
+		Vertex v1 = Vertex(glm::vec3(0.5f, -0.5f, 0.5f));
+		Vertex v2 = Vertex(glm::vec3(0.5f, -0.5f, -0.5f));
+		Vertex v3 = Vertex(glm::vec3(-0.5f,-0.5f, -0.5f));
+		Vertex v4 = Vertex(glm::vec3(-0.5f,-0.5f, 0.5f));
+		// Set textures
+		v1.uv = glm::vec2(1, 1);
+		v2.uv = glm::vec2(0, 1);
+		v3.uv = glm::vec2(0, 0);
+		v4.uv = glm::vec2(1, 0);
+
+		bottom->addVertex(v1);// bottom far right
+		bottom->addVertex(v2); // bottom near right
+		bottom->addVertex(v3); // bottom near left
+		bottom->addVertex(v4); // bottom far left
 		bottom->addIndices(glm::vec3(0, 1, 2));
 		bottom->addIndices(glm::vec3(0, 2, 3));
 	}
@@ -99,10 +162,23 @@ void Cube::setBottom(bool b) {
 void Cube::setFront(bool b) {
 	front->reset();
 	if (b) {
-		front->addVertex(Vertex(glm::vec3(-0.5f, 0.5f, 0.5f))); // top far left
-		front->addVertex(Vertex(glm::vec3(0.5f, 0.5f, 0.5f))); // top far right
-		front->addVertex(Vertex(glm::vec3(-0.5f, -0.5f, 0.5f))); // bottom far left
-		front->addVertex(Vertex(glm::vec3(0.5f, -0.5f, 0.5f))); // bottom far right
+
+
+		Vertex v1 = Vertex(glm::vec3(-0.5f, 0.5f, 0.5f)); // top far left
+		Vertex v2 = Vertex(glm::vec3(0.5f, 0.5f, 0.5f)); // top far right
+		Vertex v3 = Vertex(glm::vec3(-0.5f, -0.5f, 0.5f)); // bottom far left
+		Vertex v4 = Vertex(glm::vec3(0.5f, -0.5f, 0.5f)); // bottom far right
+		// Set textures
+		v1.uv = glm::vec2(0, 1);
+		v2.uv = glm::vec2(1, 1);
+		v3.uv = glm::vec2(0, 0);
+		v4.uv = glm::vec2(1, 0);
+
+
+		front->addVertex(v1);
+		front->addVertex(v2);
+		front->addVertex(v3);
+		front->addVertex(v4);
 		front->addIndices(glm::vec3(1, 2, 0));
 		front->addIndices(glm::vec3(3, 2, 1));
 	}
@@ -111,16 +187,31 @@ void Cube::setFront(bool b) {
 void Cube::setBack(bool b) {
 	back->reset();
 	if (b) {
-		back->addVertex(Vertex(glm::vec3(-0.5f, 0.5f, -0.5f))); // top near left
-		back->addVertex(Vertex(glm::vec3(0.5f, 0.5f, -0.5f))); // top near right
-		back->addVertex(Vertex(glm::vec3(-0.5f, -0.5f, -0.5f))); // bottom near left
-		back->addVertex(Vertex(glm::vec3(0.5f, -0.5f, -0.5f))); // bottom near right
+
+
+		Vertex v1 = Vertex(glm::vec3(-0.5f, 0.5f, -0.5f)); // top near left
+		Vertex v2 = Vertex(glm::vec3(0.5f, 0.5f, -0.5f)); // top near right
+		Vertex v3 = Vertex(glm::vec3(-0.5f, -0.5f, -0.5f)); // bottom near left
+		Vertex v4 = Vertex(glm::vec3(0.5f, -0.5f, -0.5f)); // bottom near right
+														  
+		v1.uv = glm::vec2(0, 1);
+		v2.uv = glm::vec2(1, 1);
+		v3.uv = glm::vec2(0, 0);
+		v4.uv = glm::vec2(1, 0);
+
+
+		back->addVertex(v1);
+		back->addVertex(v2);
+		back->addVertex(v3);
+		back->addVertex(v4);
+
 		back->addIndices(glm::vec3(0, 2, 1));
 		back->addIndices(glm::vec3(1, 2, 3));
 	}
 	onChange();
 }
 
+// TODO remove
 void Cube::setLeftColor(glm::vec4 color) {
 	left->setColor(color);
 	onChange();
@@ -143,5 +234,33 @@ void Cube::setFrontColor(glm::vec4 color) {
 }
 void Cube::setBackColor(glm::vec4 color) {
 	back->setColor(color);
+	onChange();
+}
+
+void Cube::setMaterial(const Material& material) {
+	left->setMaterial(material);
+	right->setMaterial(material);
+	top->setMaterial(material);
+	bottom->setMaterial(material);
+	front->setMaterial(material);
+	back->setMaterial(material);
+	onChange();
+}
+
+void Cube::setFaceMaterial(CubeFace face, const Material material) {
+	Mesh* meshFace = faceSwith(face);
+	meshFace->setMaterial(material);
+	onChange();
+}
+
+void Cube::setFaceTexture(CubeFace face, Texture texture, float repeatX, float repeatY) {
+	Mesh* meshFace = faceSwith(face);
+	meshFace->setTexture(texture, repeatX, repeatY);
+	onChange();
+}
+
+void Cube::setFaceMix(CubeFace face, Material material, Texture texture, float repeatX, float repeatY, int mix) {
+	Mesh* meshFace = faceSwith(face);
+	meshFace->mix(material, texture, repeatX, repeatY, mix);
 	onChange();
 }

@@ -2,103 +2,21 @@
 #include "RoomGen.h"
 #include "Painting.h"
 
+
 Display::Display(std::string title, int width, int height, bool enableDebugging) {
 	debugModeEnabled = enableDebugging;
 	initGL(title, width, height);
 	initGLBuffers();
+	initTextures();
 	initSharedData();
 	initCamera();
 	if (debugModeEnabled){
 		initDebugMeshes();
 	}
-
-
-	//Cube c;
-	//c.translateMesh(glm::vec3(0.5f, 0.5f, 0.5f));
-	//c.localRotateMesh(glm::radians(45.0), glm::vec3(1, 1, 1));
-
-	// Random change
-	Plane p;
-	p.translateMesh(glm::vec3(5, 0, 5));
-	p.localScaleMesh(glm::vec3(5, 1, 5));
-	p.localRotateMesh(glm::radians(45.0), glm::vec3(0, 1, 0));
-
-	Circle cc;
-
-	Cone cy(20);
-	//cy.translateMesh(glm::vec3(2, 2, 2));
-	//cy.rotateMesh(glm::radians(-45.0), glm::vec3(0, 1, 0));
-	//cy.localScaleMesh(glm::vec3(2, 10, 2));
-
 	
-
-
-	RandomShape rs;
-	RandomShape rs1;
-	RandomShape rs2;
-	RandomShape rs3;
-	//rs.translateMesh(glm::vec3(2.0f, 2.0f, 2.0f));
-	//rs.localRotateMesh(glm::radians(45.0), glm::vec3(1, 1, 1));
-
-	//meshManager.addMesh(&c);
-	//meshManager.addMesh(&p);
-	//meshManager.addMesh(&cc);
-	//meshManager.addMesh(&cy);
-
-	
-	rs.setColor(glm::vec4(0.7f, 0.4f, 0.0f, 1.0f));
-
-	rs.setColor(glm::vec4(ORANGE, 1.0f));
-
-	rs.translateMesh(glm::vec3(15.0f, 3.0f, 15.0f));
-	//meshManager.addMesh(&rs);
-	rs1.setColor(glm::vec4(PURPLE, 1.0f));
-	rs1.translateMesh(glm::vec3(15.0f, 3.0f, -15.0f));
-	//meshManager.addMesh(&rs1);
-	rs2.setColor(glm::vec4(CYAN, 1.0f));
-	rs2.translateMesh(glm::vec3(-15.0f, 3.0f, 15.0f));
-	//meshManager.addMesh(&rs2);
-	rs3.setColor(glm::vec4(LIME, 1.0f));
-	rs3.translateMesh(glm::vec3(-15.0f, 3.0f, -15.0f));
-	//meshManager.addMesh(&rs3);
-
-	// --- PEDESTAL
-	Pedestal ped = Pedestal();
-	ped.setAllColor(glm::vec4(0.66f));
-	//ped.setBaseColor(glm::vec4(0.66f));
-	//ped.setTopColor(glm::vec4(0.86f));
-	meshManager.addMesh(&ped);
-	
-
-	Cube c;
-	c.setTopColor(glm::vec4(BEIGE, 1.0f));
-	c.setBottomColor(glm::vec4(DARKORANGE, 1.0f));
-	c.setLeftColor(glm::vec4(LAVENDER, 1.0f));
-	c.setRightColor(glm::vec4(LAVENDER, 1.0f));
-	c.setBackColor(glm::vec4(FORESTGREEN, 1.0f));
-	c.setFrontColor(glm::vec4(BLUE, 1.0f));
-	c.localScaleMesh(glm::vec3(2.0f, 2.0f, 2.0f));
-	c.translateMesh(glm::vec3(5.0f, 0.0f, 5.0f));
-	//addMesh(&c);
-	//c.setFront(false);
-	//meshManager.addMesh(&c);
-
-	Room r(7, 4, 3, 0, 0);
-	r.setLeftOpening(1.5f, 3);
-	r.setRightOpening(3, 4.5f);
-	r.setBackOpening(0, 1);
-	r.setFrontOpening(2, 3);
-	//meshManager.addMesh(&r);
-
-	RoomGen rooms;
+	RoomGen rooms(&textureMap, &lights);
 	meshManager.addMesh(&rooms);
-
-	//HallwayGen hallways;
-	//meshManager.addMesh(&hallways);
-
-
-	// TODO: procedurally generate all the mesh data here
-	// generateEnivorment();
+	sharedData.camera->setPosition(rooms.getRandomRoomPosition());
 	meshManager.computeMergedMesh();
 }
 
@@ -111,7 +29,9 @@ Display::~Display() {
 	if (debugModeEnabled) {
 		glDeleteBuffers(1, &DEBUG_VBO);
 		glDeleteBuffers(1, &DEBUG_EBO);
+		delete debugShader;
 	}
+	
 	glfwTerminate();
 }
 
@@ -127,16 +47,66 @@ void Display::update() {
 	// Update the view matrix
 	sharedData.transform->view = sharedData.camera->getViewMatrix();
 
-	// Compute the cmt transform and pass to our shader
-	glUniformMatrix4fv(transformUniform, 1, GL_FALSE, value_ptr(sharedData.transform->getTransform()));
-
-	shader->Use();
-
 	glBindVertexArray(VAO);
 	
 	if (debugModeEnabled) {
 		debugUpdate();
 	}
+
+
+	// Pass our uniform data
+	// Compute the cmt transform and pass to our shader
+	glm::vec3 cameraPos = camera.getCameraPosition();
+
+	
+
+
+
+	shader->Use();
+	glUniformMatrix4fv(transformUniform, 1, GL_FALSE, value_ptr(sharedData.transform->getTransform()));
+	glUniformMatrix4fv(modelUniform, 1, GL_FALSE, value_ptr(sharedData.transform->model));
+	glUniform3f(cameraPositionUniform, cameraPos.x, cameraPos.y, cameraPos.z);
+	
+	// Pass lights
+	int fragmentLightIndex = 0;
+	for (int i = 0; i < lights.size(); ++i) {
+		// TODO filter out lights we dont need
+		Light& light = lights[i];
+		if (fragmentLightIndex > maxLights) {
+			break; // We've reached  max lights in our shader
+		}
+		if (abs(glm::distance(light.position , cameraPos)) < maxLightDistance) {
+			glUniform3f(glGetUniformLocation(shader->Program, std::string("lights[").append(std::to_string(fragmentLightIndex) + "].position").c_str()), light.position.x, light.position.y, light.position.z);
+			glUniform3f(glGetUniformLocation(shader->Program, std::string("lights[").append(std::to_string(fragmentLightIndex) + "].ambient").c_str()), light.ambient.r, light.ambient.g, light.ambient.b);
+			glUniform3f(glGetUniformLocation(shader->Program, std::string("lights[").append(std::to_string(fragmentLightIndex) + "].diffuse").c_str()), light.diffuse.r, light.diffuse.g, light.diffuse.b);
+			glUniform3f(glGetUniformLocation(shader->Program, std::string("lights[").append(std::to_string(fragmentLightIndex) + "].specular").c_str()), light.specular.r, light.specular.g, light.specular.b);
+			glUniform3f(glGetUniformLocation(shader->Program, std::string("lights[").append(std::to_string(fragmentLightIndex) + "].position").c_str()), light.position.x, light.position.y, light.position.z);
+			glUniform1f(glGetUniformLocation(shader->Program, std::string("lights[").append(std::to_string(fragmentLightIndex) + "].constant").c_str()), light.constant);
+			glUniform1f(glGetUniformLocation(shader->Program, std::string("lights[").append(std::to_string(fragmentLightIndex) + "].linear").c_str()), light.linear);
+			glUniform1f(glGetUniformLocation(shader->Program, std::string("lights[").append(std::to_string(fragmentLightIndex) + "].quadratic").c_str()), light.quadratic);
+			fragmentLightIndex++;
+		}
+		
+	}
+
+	
+
+	// Pass textures
+	for (std::unordered_map<std::string, Texture>::value_type& texture : textureMap) {
+
+		// Load the diffuse/normal/specular maps
+		TextureMap* maps[] = { &texture.second.diffuseMap, &texture.second.normalMap, &texture.second.specularMap, &texture.second.heightMap };
+		for (TextureMap* map : maps) {
+			glActiveTexture(GL_TEXTURE0 + map->mapId - 1);
+			glBindTexture(GL_TEXTURE_2D, map->mapId);
+			std::string uni = std::string(textureToUniform(texture.first, map->mapType));
+			glUniform1i(glGetUniformLocation(shader->Program, uni.c_str()), map->mapId - 1);
+			
+		}
+	}
+
+
+
 	// Draw the rest of our scene
 	glBufferData(GL_ARRAY_BUFFER, meshManager.finalMesh.vertexBufferSize(), meshManager.finalMesh.getVertices().data(), GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -162,6 +132,8 @@ void Display::setShader(Shader* shader) {
 	this->shader = shader;
 	// Get the uniform locations only once when we set up the shader
 	transformUniform = glGetUniformLocation(shader->Program, "transform");
+	modelUniform = glGetUniformLocation(shader->Program, "model");
+	cameraPositionUniform = glGetUniformLocation(shader->Program, "camera_position");
 }
 
 void Display::setHandler(GLFWCallbackHandler* handler) {
@@ -178,12 +150,17 @@ void Display::setHandler(GLFWCallbackHandler* handler) {
 }
 
 void Display::initGL(std::string windowName, int width, int height) {
+	windowWidth = width;
+	windowHeight = height;
 	// init glfw 
 	glfwInit();
 
 	// specify version 3.3
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+
+	glfwWindowHint(GLFW_SAMPLES, 4);
+	glEnable(GL_MULTISAMPLE);
 
 	// use core profile
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -218,8 +195,71 @@ void Display::initGL(std::string windowName, int width, int height) {
 	//glPointSize(30);
 }
 
+void Display::initTextures() {
+
+	std::string t1 = "wood7";
+	// Load of all our textures here
+	Texture texture1("textures/" + t1 + "/", t1, "png");
+	texture1.uvWrap = glm::ivec2(GL_REPEAT, GL_REPEAT);
+	texture1.maxFilter = GL_NEAREST;
+	texture1.minFilter = GL_NEAREST;
+
+	
+	std::string t2 = "wall2";
+
+	Texture texture2("textures/" + t2 + "/", t2, "jpg");
+	texture2.uvWrap = glm::ivec2(GL_REPEAT, GL_REPEAT);
+	texture2.maxFilter = GL_NEAREST;
+	texture2.minFilter = GL_NEAREST;
+
+
+	std::string t3 = "copper";
+
+	Texture texture3("textures/" + t3 + "/", t3, "jpg");
+	texture3.uvWrap = glm::ivec2(GL_REPEAT, GL_REPEAT);
+	texture3.maxFilter = GL_NEAREST;
+	texture3.minFilter = GL_NEAREST;
+
+
+	
+	textureMap.emplace("wall", texture2);
+	textureMap.emplace("floor", texture1);
+	textureMap.emplace("frame", texture3);
+
+	for (std::unordered_map<std::string, Texture>::value_type& texture : textureMap) {
+		// Load the diffuse/normal/specular/height maps
+		TextureMap* maps[] = { &texture.second.diffuseMap, &texture.second.normalMap, &texture.second.specularMap, &texture.second.heightMap };
+		for (TextureMap* map : maps) {
+			glGenTextures(1, &(map->mapId));
+			glBindTexture(GL_TEXTURE_2D, map->mapId);
+			// Texture parameters
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texture.second.uvWrap.s);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texture.second.uvWrap.t);
+			// Texture filtering
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texture.second.minFilter);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texture.second.maxFilter);
+			// Load image
+			unsigned char* image = SOIL_load_image(map->mapFilename.c_str(), &texture.second.width, &texture.second.height, 0, SOIL_LOAD_RGB);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texture.second.width, texture.second.height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+			glGenerateMipmap(GL_TEXTURE_2D);
+			// Free the image
+			SOIL_free_image_data(image);
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+		
+	}
+
+}
+
 void Display::initCamera() {
-	camera = Camera();
+	PerspectiveCameraParams params;
+	params.yFov = 45.0f;
+	params.aspectRatio = windowWidth / windowHeight;
+	params.zNearPlane = 0.1;
+	params.zFarPlane = 100.0;
+	camera = Camera(params);
+	
+	
 	sharedData.transform->model = glm::mat4();
 	sharedData.transform->view = sharedData.camera->getViewMatrix();
 	sharedData.transform->projection = sharedData.camera->getProjectionMatrix();
@@ -259,14 +299,57 @@ void Display::initGLBuffers() {
 	glEnableVertexAttribArray(0);
 
 	byteOffset += sizeof(glm::vec4);
-	// Color attribute
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(byteOffset));
+	// Normal attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(byteOffset));
 	glEnableVertexAttribArray(1);
 
-	byteOffset += sizeof(glm::vec4);
-	// Normal attribute
+	byteOffset += sizeof(glm::vec3);
+	// ambient attribute
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(byteOffset));
 	glEnableVertexAttribArray(2);
+
+
+	byteOffset += sizeof(glm::vec3);
+	// diffuse attribute
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(byteOffset));
+	glEnableVertexAttribArray(3);
+
+	byteOffset += sizeof(glm::vec3);
+	// specular attribute
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(byteOffset));
+	glEnableVertexAttribArray(4);
+
+	byteOffset += sizeof(glm::vec3);
+	// shininess attribute
+	glVertexAttribPointer(5, 1, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(byteOffset));
+	glEnableVertexAttribArray(5);
+
+	
+	byteOffset += sizeof(GLfloat);
+	// uv attribute
+	glVertexAttribPointer(6, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(byteOffset));
+	glEnableVertexAttribArray(6);
+
+
+	byteOffset += sizeof(glm::vec2);
+	// texture meta 
+	glVertexAttribPointer(7, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(byteOffset));
+	glEnableVertexAttribArray(7);
+
+	byteOffset += sizeof(glm::ivec2);
+	// texturemaps 
+	glVertexAttribPointer(8, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(byteOffset));
+	glEnableVertexAttribArray(8);
+
+	byteOffset += sizeof(glm::ivec4);
+	// tangent 
+	glVertexAttribPointer(9, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(byteOffset));
+	glEnableVertexAttribArray(9);
+
+	byteOffset += sizeof(glm::vec3);
+	// bit tangent
+	glVertexAttribPointer(10, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)(byteOffset));
+	glEnableVertexAttribArray(10);
 
 }
 
@@ -277,6 +360,7 @@ void Display::initSharedData() {
 }
 
 void Display::initDebugMeshes() {
+	debugShader = new Shader("debug_shader.vert", "debug_shader.frag");;
 	GridMesh grid;
 	debugMeshManager.grid = grid;
 	XYZAxis xyz;
@@ -284,6 +368,11 @@ void Display::initDebugMeshes() {
 }
 
 void Display::debugUpdate() {
+
+	debugShader->Use();
+	glUniformMatrix4fv(glGetUniformLocation(debugShader->Program, "transform"), 1, GL_FALSE, value_ptr(sharedData.transform->getTransform()));
+	
+
 	// Draw grid
 	glBindBuffer(GL_ARRAY_BUFFER, DEBUG_VBO);
 	glBufferData(GL_ARRAY_BUFFER, debugMeshManager.grid.vertexBufferSize(), debugMeshManager.grid.getVertices().data(), GL_STATIC_DRAW);
@@ -291,7 +380,7 @@ void Display::debugUpdate() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, debugMeshManager.grid.indexBufferSize(), debugMeshManager.grid.getIndices().data(), GL_STATIC_DRAW);
 	glDrawElements(GL_LINES, debugMeshManager.grid.getIndices().size(), GL_UNSIGNED_INT, 0);
 
-
+	// Draw axes
 	glLineWidth(5);
 	glBindBuffer(GL_ARRAY_BUFFER, DEBUG_VBO);
 	glBufferData(GL_ARRAY_BUFFER, debugMeshManager.axes.vertexBufferSize(), debugMeshManager.axes.getVertices().data(), GL_STATIC_DRAW);
@@ -302,3 +391,4 @@ void Display::debugUpdate() {
 	glLineWidth(1);
 	
 }
+

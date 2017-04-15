@@ -1,7 +1,7 @@
 #include "Camera.h"
 
 // TODO: fiddle around with these values until it feels nice
-const float Camera::CAMERA_SPEED = 0.25f;
+const float Camera::CAMERA_SPEED = 0.15f;
 const float Camera::LOOK_AROUND_SPEED = 0.0025f;
 
 Camera::Camera() {
@@ -72,6 +72,6 @@ void Camera::updateMouse(glm::vec2& newPos) {
 	oldMousePos = newPos;
 }
 
-glm::vec3 Camera::getCameraPosition() const {
+const glm::vec3& Camera::getCameraPosition() const {
 	return position;
 }

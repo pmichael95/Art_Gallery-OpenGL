@@ -1,81 +1,79 @@
-///////////////////////////////////////////////////////////////////////////////////
-/// OpenGL Mathematics (glm.g-truc.net)
-///
-/// Copyright (c) 2005 - 2015 G-Truc Creation (www.g-truc.net)
-/// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
-/// furnished to do so, subject to the following conditions:
-/// 
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-/// 
-/// Restrictions:
-///		By making use of the Software for military purposes, you choose to make
-///		a Bunny unhappy.
-/// 
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-/// THE SOFTWARE.
-///
 /// @ref core
 /// @file glm/detail/type_tvec3.inl
-/// @date 2008-08-22 / 2011-06-15
-/// @author Christophe Riccio
-///////////////////////////////////////////////////////////////////////////////////
 
 namespace glm
 {
-	//////////////////////////////////////
-	// Implicit basic constructors
+
+#	ifdef GLM_STATIC_CONST_MEMBERS
+	template <typename T, precision P>
+	const tvec3<T, P> tvec3<T, P>::ZERO(static_cast<T>(0), static_cast<T>(0), static_cast<T>(0));
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation()
-#		ifndef GLM_FORCE_NO_CTOR_INIT 
-			: x(0), y(0), z(0)
-#		endif
-	{}
+	const tvec3<T, P> tvec3<T, P>::X(static_cast<T>(1), static_cast<T>(0), static_cast<T>(0));
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation(mesh_rotation<T, P> const & v)
-		: x(v.x), y(v.y), z(v.z)
-	{}
+	const tvec3<T, P> tvec3<T, P>::Y(static_cast<T>(0), static_cast<T>(1), static_cast<T>(0));
+
+	template <typename T, precision P>
+	const tvec3<T, P> tvec3<T, P>::Z(static_cast<T>(0), static_cast<T>(0), static_cast<T>(1));
+
+	template <typename T, precision P>
+	const tvec3<T, P> tvec3<T, P>::XY(static_cast<T>(1), static_cast<T>(1), static_cast<T>(0));
+
+	template <typename T, precision P>
+	const tvec3<T, P> tvec3<T, P>::XZ(static_cast<T>(1), static_cast<T>(0), static_cast<T>(1));
+
+	template <typename T, precision P>
+	const tvec3<T, P> tvec3<T, P>::YZ(static_cast<T>(0), static_cast<T>(1), static_cast<T>(1));
+
+	template <typename T, precision P>
+	const tvec3<T, P> tvec3<T, P>::XYZ(static_cast<T>(1), static_cast<T>(1), static_cast<T>(1));
+#	endif
+	// -- Implicit basic constructors --
+
+#	if !GLM_HAS_DEFAULTED_FUNCTIONS || !defined(GLM_FORCE_NO_CTOR_INIT)
+		template <typename T, precision P>
+		GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3()
+#			ifndef GLM_FORCE_NO_CTOR_INIT 
+				: x(0), y(0), z(0)
+#			endif
+		{}
+#	endif//!GLM_HAS_DEFAULTED_FUNCTIONS
+
+#	if !GLM_HAS_DEFAULTED_FUNCTIONS
+		template <typename T, precision P>
+		GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3(tvec3<T, P> const & v)
+			: x(v.x), y(v.y), z(v.z)
+		{}
+#	endif//!GLM_HAS_DEFAULTED_FUNCTIONS
 
 	template <typename T, precision P>
 	template <precision Q>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation(mesh_rotation<T, Q> const & v)
+	GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3(tvec3<T, Q> const & v)
 		: x(v.x), y(v.y), z(v.z)
 	{}
 
-	//////////////////////////////////////
-	// Explicit basic constructors
+	// -- Explicit basic constructors --
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation(ctor)
+	GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3(ctor)
 	{}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation(T const & s)
-		: x(s), y(s), z(s)
+	GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3(T scalar)
+		: x(scalar), y(scalar), z(scalar)
 	{}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation(T const & a, T const & b, T const & c)
+	GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3(T a, T b, T c)
 		: x(a), y(b), z(c)
 	{}
 
-	//////////////////////////////////////
-	// Conversion scalar constructors
+	// -- Conversion scalar constructors --
 
 	template <typename T, precision P>
 	template <typename A, typename B, typename C>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation(A const & a, B const & b, C const & c) :
+	GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3(A a, B b, C c) :
 		x(static_cast<T>(a)),
 		y(static_cast<T>(b)),
 		z(static_cast<T>(c))
@@ -83,18 +81,17 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename A, typename B, typename C>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation(tvec1<A, P> const & a, tvec1<B, P> const & b, tvec1<C, P> const & c) :
+	GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3(tvec1<A, P> const & a, tvec1<B, P> const & b, tvec1<C, P> const & c) :
 		x(static_cast<T>(a)),
 		y(static_cast<T>(b)),
 		z(static_cast<T>(c))
 	{}
 
-	//////////////////////////////////////
-	// Conversion vector constructors
+	// -- Conversion vector constructors --
 
 	template <typename T, precision P>
 	template <typename A, typename B, precision Q>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation(tvec2<A, Q> const & a, B const & b) :
+	GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3(tvec2<A, Q> const & a, B b) :
 		x(static_cast<T>(a.x)),
 		y(static_cast<T>(a.y)),
 		z(static_cast<T>(b))
@@ -102,7 +99,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename A, typename B, precision Q>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation(tvec2<A, Q> const & a, tvec1<B, Q> const & b) :
+	GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3(tvec2<A, Q> const & a, tvec1<B, Q> const & b) :
 		x(static_cast<T>(a.x)),
 		y(static_cast<T>(a.y)),
 		z(static_cast<T>(b.x))
@@ -110,7 +107,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename A, typename B, precision Q>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation(A const & a, tvec2<B, Q> const & b) :
+	GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3(A a, tvec2<B, Q> const & b) :
 		x(static_cast<T>(a)),
 		y(static_cast<T>(b.x)),
 		z(static_cast<T>(b.y))
@@ -118,7 +115,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename A, typename B, precision Q>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation(tvec1<A, Q> const & a, tvec2<B, Q> const & b) :
+	GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3(tvec1<A, Q> const & a, tvec2<B, Q> const & b) :
 		x(static_cast<T>(a.x)),
 		y(static_cast<T>(b.x)),
 		z(static_cast<T>(b.y))
@@ -126,7 +123,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U, precision Q>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation(mesh_rotation<U, Q> const & v) :
+	GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3(tvec3<U, Q> const & v) :
 		x(static_cast<T>(v.x)),
 		y(static_cast<T>(v.y)),
 		z(static_cast<T>(v.z))
@@ -134,72 +131,44 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U, precision Q>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>::mesh_rotation(tvec4<U, Q> const & v) :
+	GLM_FUNC_QUALIFIER GLM_CONSTEXPR_CTOR tvec3<T, P>::tvec3(tvec4<U, Q> const & v) :
 		x(static_cast<T>(v.x)),
 		y(static_cast<T>(v.y)),
 		z(static_cast<T>(v.z))
 	{}
 
-	//////////////////////////////////////
-	// Component accesses
-
-#	ifdef GLM_FORCE_SIZE_FUNC
-		template <typename T, precision P>
-		GLM_FUNC_QUALIFIER GLM_CONSTEXPR typename tvec3<T, P>::size_type tvec3<T, P>::size() const
-		{
-			return 3;
-		}
-
-		template <typename T, precision P>
-		GLM_FUNC_QUALIFIER T & tvec3<T, P>::operator[](typename tvec3<T, P>::size_type i)
-		{
-			assert(i >= 0 && static_cast<detail::component_count_t>(i) < detail::component_count(*this));
-			return (&x)[i];
-		}
-
-		template <typename T, precision P>
-		GLM_FUNC_QUALIFIER T const & tvec3<T, P>::operator[](typename tvec3<T, P>::size_type i) const
-		{
-			assert(i >= 0 && static_cast<detail::component_count_t>(i) < detail::component_count(*this));
-			return (&x)[i];
-		}
-#	else
-		template <typename T, precision P>
-		GLM_FUNC_QUALIFIER GLM_CONSTEXPR typename mesh_rotation<T, P>::length_type mesh_rotation<T, P>::length() const
-		{
-			return 3;
-		}
-
-		template <typename T, precision P>
-		GLM_FUNC_QUALIFIER T & mesh_rotation<T, P>::operator[](typename mesh_rotation<T, P>::length_type i)
-		{
-			assert(i >= 0 && static_cast<detail::component_count_t>(i) < detail::component_count(*this));
-			return (&x)[i];
-		}
-
-		template <typename T, precision P>
-		GLM_FUNC_QUALIFIER T const & mesh_rotation<T, P>::operator[](typename mesh_rotation<T, P>::length_type i) const
-		{
-			assert(i >= 0 && static_cast<detail::component_count_t>(i) < detail::component_count(*this));
-			return (&x)[i];
-		}
-#	endif//GLM_FORCE_SIZE_FUNC
-
-	//////////////////////////////////////
-	// Unary arithmetic operators
+	// -- Component accesses --
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>& mesh_rotation<T, P>::operator=(mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER T & tvec3<T, P>::operator[](typename tvec3<T, P>::length_type i)
 	{
-		this->x = v.x;
-		this->y = v.y;
-		this->z = v.z;
-		return *this;
+		assert(i >= 0 && i < this->length());
+		return (&x)[i];
 	}
 
 	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER T const & tvec3<T, P>::operator[](typename tvec3<T, P>::length_type i) const
+	{
+		assert(i >= 0 && i < this->length());
+		return (&x)[i];
+	}
+
+	// -- Unary arithmetic operators --
+
+#	if !GLM_HAS_DEFAULTED_FUNCTIONS
+		template <typename T, precision P>
+		GLM_FUNC_QUALIFIER tvec3<T, P>& tvec3<T, P>::operator=(tvec3<T, P> const & v)
+		{
+			this->x = v.x;
+			this->y = v.y;
+			this->z = v.z;
+			return *this;
+		}
+#	endif//!GLM_HAS_DEFAULTED_FUNCTIONS
+
+	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P>& mesh_rotation<T, P>::operator=(mesh_rotation<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P>& tvec3<T, P>::operator=(tvec3<U, P> const & v)
 	{
 		this->x = static_cast<T>(v.x);
 		this->y = static_cast<T>(v.y);
@@ -209,17 +178,17 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator+=(U s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator+=(U scalar)
 	{
-		this->x += static_cast<T>(s);
-		this->y += static_cast<T>(s);
-		this->z += static_cast<T>(s);
+		this->x += static_cast<T>(scalar);
+		this->y += static_cast<T>(scalar);
+		this->z += static_cast<T>(scalar);
 		return *this;
 	}
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator+=(tvec1<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator+=(tvec1<U, P> const & v)
 	{
 		this->x += static_cast<T>(v.x);
 		this->y += static_cast<T>(v.x);
@@ -229,7 +198,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator+=(mesh_rotation<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator+=(tvec3<U, P> const & v)
 	{
 		this->x += static_cast<T>(v.x);
 		this->y += static_cast<T>(v.y);
@@ -239,17 +208,17 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator-=(U s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator-=(U scalar)
 	{
-		this->x -= static_cast<T>(s);
-		this->y -= static_cast<T>(s);
-		this->z -= static_cast<T>(s);
+		this->x -= static_cast<T>(scalar);
+		this->y -= static_cast<T>(scalar);
+		this->z -= static_cast<T>(scalar);
 		return *this;
 	}
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator-=(tvec1<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator-=(tvec1<U, P> const & v)
 	{
 		this->x -= static_cast<T>(v.x);
 		this->y -= static_cast<T>(v.x);
@@ -259,7 +228,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator-=(mesh_rotation<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator-=(tvec3<U, P> const & v)
 	{
 		this->x -= static_cast<T>(v.x);
 		this->y -= static_cast<T>(v.y);
@@ -269,17 +238,17 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator*=(U s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator*=(U scalar)
 	{
-		this->x *= static_cast<T>(s);
-		this->y *= static_cast<T>(s);
-		this->z *= static_cast<T>(s);
+		this->x *= static_cast<T>(scalar);
+		this->y *= static_cast<T>(scalar);
+		this->z *= static_cast<T>(scalar);
 		return *this;
 	}
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator*=(tvec1<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator*=(tvec1<U, P> const & v)
 	{
 		this->x *= static_cast<T>(v.x);
 		this->y *= static_cast<T>(v.x);
@@ -289,7 +258,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator*=(mesh_rotation<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator*=(tvec3<U, P> const & v)
 	{
 		this->x *= static_cast<T>(v.x);
 		this->y *= static_cast<T>(v.y);
@@ -299,17 +268,17 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator/=(U s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator/=(U v)
 	{
-		this->x /= static_cast<T>(s);
-		this->y /= static_cast<T>(s);
-		this->z /= static_cast<T>(s);
+		this->x /= static_cast<T>(v);
+		this->y /= static_cast<T>(v);
+		this->z /= static_cast<T>(v);
 		return *this;
 	}
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator/=(tvec1<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator/=(tvec1<U, P> const & v)
 	{
 		this->x /= static_cast<T>(v.x);
 		this->y /= static_cast<T>(v.x);
@@ -319,7 +288,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator/=(mesh_rotation<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator/=(tvec3<U, P> const & v)
 	{
 		this->x /= static_cast<T>(v.x);
 		this->y /= static_cast<T>(v.y);
@@ -327,11 +296,10 @@ namespace glm
 		return *this;
 	}
 
-	//////////////////////////////////////
-	// Increment and decrement operators
+	// -- Increment and decrement operators --
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator++()
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator++()
 	{
 		++this->x;
 		++this->y;
@@ -340,7 +308,7 @@ namespace glm
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator--()
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator--()
 	{
 		--this->x;
 		--this->y;
@@ -349,37 +317,36 @@ namespace glm
 	}
 
 	template <typename T, precision P> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> mesh_rotation<T, P>::operator++(int)
+	GLM_FUNC_QUALIFIER tvec3<T, P> tvec3<T, P>::operator++(int)
 	{
-		mesh_rotation<T, P> Result(*this);
+		tvec3<T, P> Result(*this);
 		++*this;
 		return Result;
 	}
 
 	template <typename T, precision P> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> mesh_rotation<T, P>::operator--(int)
+	GLM_FUNC_QUALIFIER tvec3<T, P> tvec3<T, P>::operator--(int)
 	{
-		mesh_rotation<T, P> Result(*this);
+		tvec3<T, P> Result(*this);
 		--*this;
 		return Result;
 	}
 
-	//////////////////////////////////////
-	// Unary bit operators
+	// -- Unary bit operators --
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator%=(U s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator%=(U scalar)
 	{
-		this->x %= s;
-		this->y %= s;
-		this->z %= s;
+		this->x %= scalar;
+		this->y %= scalar;
+		this->z %= scalar;
 		return *this;
 	}
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator%=(tvec1<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator%=(tvec1<U, P> const & v)
 	{
 		this->x %= v.x;
 		this->y %= v.x;
@@ -389,7 +356,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator%=(mesh_rotation<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator%=(tvec3<U, P> const & v)
 	{
 		this->x %= v.x;
 		this->y %= v.y;
@@ -399,17 +366,17 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator&=(U s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator&=(U scalar)
 	{
-		this->x &= s;
-		this->y &= s;
-		this->z &= s;
+		this->x &= scalar;
+		this->y &= scalar;
+		this->z &= scalar;
 		return *this;
 	}
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator&=(tvec1<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator&=(tvec1<U, P> const & v)
 	{
 		this->x &= v.x;
 		this->y &= v.x;
@@ -419,7 +386,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator&=(mesh_rotation<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator&=(tvec3<U, P> const & v)
 	{
 		this->x &= v.x;
 		this->y &= v.y;
@@ -429,17 +396,17 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator|=(U s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator|=(U scalar)
 	{
-		this->x |= s;
-		this->y |= s;
-		this->z |= s;
+		this->x |= scalar;
+		this->y |= scalar;
+		this->z |= scalar;
 		return *this;
 	}
 
 	template <typename T, precision P>
 	template <typename U> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator|=(tvec1<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator|=(tvec1<U, P> const & v)
 	{
 		this->x |= v.x;
 		this->y |= v.x;
@@ -449,7 +416,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator|=(mesh_rotation<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator|=(tvec3<U, P> const & v)
 	{
 		this->x |= v.x;
 		this->y |= v.y;
@@ -459,17 +426,17 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator^=(U s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator^=(U scalar)
 	{
-		this->x ^= s;
-		this->y ^= s;
-		this->z ^= s;
+		this->x ^= scalar;
+		this->y ^= scalar;
+		this->z ^= scalar;
 		return *this;
 	}
 
 	template <typename T, precision P>
 	template <typename U> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator^=(tvec1<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator^=(tvec1<U, P> const & v)
 	{
 		this->x ^= v.x;
 		this->y ^= v.x;
@@ -479,7 +446,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator^=(mesh_rotation<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator^=(tvec3<U, P> const & v)
 	{
 		this->x ^= v.x;
 		this->y ^= v.y;
@@ -489,17 +456,17 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator<<=(U s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator<<=(U scalar)
 	{
-		this->x <<= s;
-		this->y <<= s;
-		this->z <<= s;
+		this->x <<= scalar;
+		this->y <<= scalar;
+		this->z <<= scalar;
 		return *this;
 	}
 
 	template <typename T, precision P>
 	template <typename U> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator<<=(tvec1<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator<<=(tvec1<U, P> const & v)
 	{
 		this->x <<= static_cast<T>(v.x);
 		this->y <<= static_cast<T>(v.x);
@@ -509,7 +476,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator<<=(mesh_rotation<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator<<=(tvec3<U, P> const & v)
 	{
 		this->x <<= static_cast<T>(v.x);
 		this->y <<= static_cast<T>(v.y);
@@ -519,17 +486,17 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator>>=(U s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator>>=(U scalar)
 	{
-		this->x >>= static_cast<T>(s);
-		this->y >>= static_cast<T>(s);
-		this->z >>= static_cast<T>(s);
+		this->x >>= static_cast<T>(scalar);
+		this->y >>= static_cast<T>(scalar);
+		this->z >>= static_cast<T>(scalar);
 		return *this;
 	}
 
 	template <typename T, precision P>
 	template <typename U> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator>>=(tvec1<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator>>=(tvec1<U, P> const & v)
 	{
 		this->x >>= static_cast<T>(v.x);
 		this->y >>= static_cast<T>(v.x);
@@ -539,7 +506,7 @@ namespace glm
 
 	template <typename T, precision P>
 	template <typename U> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> & mesh_rotation<T, P>::operator>>=(mesh_rotation<U, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> & tvec3<T, P>::operator>>=(tvec3<U, P> const & v)
 	{
 		this->x >>= static_cast<T>(v.x);
 		this->y >>= static_cast<T>(v.y);
@@ -547,496 +514,509 @@ namespace glm
 		return *this;
 	}
 
-	//////////////////////////////////////
-	// Boolean operators
+	// -- Unary arithmetic operators --
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER bool operator==(mesh_rotation<T, P> const & v1, mesh_rotation<T, P> const & v2)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator+(tvec3<T, P> const & v)
 	{
-		return (v1.x == v2.x) && (v1.y == v2.y) && (v1.z == v2.z);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER bool operator!=(mesh_rotation<T, P> const & v1, mesh_rotation<T, P> const & v2)
-	{
-		return (v1.x != v2.x) || (v1.y != v2.y) || (v1.z != v2.z);
-	}
-
-	//////////////////////////////////////
-	// Binary arithmetic operators
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator+(mesh_rotation<T, P> const & v, T const & s)
-	{
-		return mesh_rotation<T, P>(
-			v.x + s,
-			v.y + s,
-			v.z + s);
+		return v;
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator+(mesh_rotation<T, P> const & v, tvec1<T, P> const & s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator-(tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
-			v.x + s.x,
-			v.y + s.x,
-			v.z + s.x);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator+(T const & s, mesh_rotation<T, P> const & v)
-	{
-		return mesh_rotation<T, P>(
-			s + v.x,
-			s + v.y,
-			s + v.z);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator+(tvec1<T, P> const & s, mesh_rotation<T, P> const & v)
-	{
-		return mesh_rotation<T, P>(
-			s.x + v.x,
-			s.x + v.y,
-			s.x + v.z);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator+(mesh_rotation<T, P> const & v1, mesh_rotation<T, P> const & v2)
-	{
-		return mesh_rotation<T, P>(
-			v1.x + v2.x,
-			v1.y + v2.y,
-			v1.z + v2.z);
-	}
-
-	//operator-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator-(mesh_rotation<T, P> const & v, T const & s)
-	{
-		return mesh_rotation<T, P>(
-			v.x - s,
-			v.y - s,
-			v.z - s);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator-(mesh_rotation<T, P> const & v, tvec1<T, P> const & s)
-	{
-		return mesh_rotation<T, P>(
-			v.x - s.x,
-			v.y - s.x,
-			v.z - s.x);
-	}
-
-	template <typename T, precision P> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator-(T const & s, mesh_rotation<T, P> const & v)
-	{
-		return mesh_rotation<T, P>(
-			s - v.x,
-			s - v.y,
-			s - v.z);
-	}
-
-	template <typename T, precision P> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator-(tvec1<T, P> const & s, mesh_rotation<T, P> const & v)
-	{
-		return mesh_rotation<T, P>(
-			s.x - v.x,
-			s.x - v.y,
-			s.x - v.z);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator-(mesh_rotation<T, P> const & v1, mesh_rotation<T, P> const & v2)
-	{
-		return mesh_rotation<T, P>(
-			v1.x - v2.x,
-			v1.y - v2.y,
-			v1.z - v2.z);
-	}
-
-	//operator*
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator*(mesh_rotation<T, P> const & v, T const & s)
-	{
-		return mesh_rotation<T, P>(
-			v.x * s,
-			v.y * s,
-			v.z * s);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator*(mesh_rotation<T, P> const & v, tvec1<T, P> const & s)
-	{
-		return mesh_rotation<T, P>(
-			v.x * s.x,
-			v.y * s.x,
-			v.z * s.x);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator*(T const & s, mesh_rotation<T, P> const & v)
-	{
-		return mesh_rotation<T, P>(
-			s * v.x,
-			s * v.y,
-			s * v.z);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator*(tvec1<T, P> const & s, mesh_rotation<T, P> const & v)
-	{
-		return mesh_rotation<T, P>(
-			s.x * v.x,
-			s.x * v.y,
-			s.x * v.z);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator*(mesh_rotation<T, P> const & v1, mesh_rotation<T, P> const & v2)
-	{
-		return mesh_rotation<T, P>(
-			v1.x * v2.x,
-			v1.y * v2.y,
-			v1.z * v2.z);
-	}
-
-	//operator/
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator/(mesh_rotation<T, P> const & v, T const & s)
-	{
-		return mesh_rotation<T, P>(
-			v.x / s,
-			v.y / s,
-			v.z / s);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator/(mesh_rotation<T, P> const & v, tvec1<T, P> const & s)
-	{
-		return mesh_rotation<T, P>(
-			v.x / s.x,
-			v.y / s.x,
-			v.z / s.x);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator/(T const & s, mesh_rotation<T, P> const & v)
-	{
-		return mesh_rotation<T, P>(
-			s / v.x,
-			s / v.y,
-			s / v.z);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator/(tvec1<T, P> const & s, mesh_rotation<T, P> const & v)
-	{
-		return mesh_rotation<T, P>(
-			s.x / v.x,
-			s.x / v.y,
-			s.x / v.z);
-	}
-
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator/(mesh_rotation<T, P> const & v1, mesh_rotation<T, P> const & v2)
-	{
-		return mesh_rotation<T, P>(
-			v1.x / v2.x,
-			v1.y / v2.y,
-			v1.z / v2.z);
-	}
-
-	// Unary constant operators
-	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator-(mesh_rotation<T, P> const & v)
-	{
-		return mesh_rotation<T, P>(
+		return tvec3<T, P>(
 			-v.x, 
 			-v.y, 
 			-v.z);
 	}
 
-	//////////////////////////////////////
-	// Binary bit operators
+	// -- Binary arithmetic operators --
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator%(mesh_rotation<T, P> const & v, T const & s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator+(tvec3<T, P> const & v, T scalar)
 	{
-		return mesh_rotation<T, P>(
-			v.x % s,
-			v.y % s,
-			v.z % s);
+		return tvec3<T, P>(
+			v.x + scalar,
+			v.y + scalar,
+			v.z + scalar);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator%(mesh_rotation<T, P> const & v, tvec1<T, P> const & s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator+(tvec3<T, P> const & v, tvec1<T, P> const & scalar)
 	{
-		return mesh_rotation<T, P>(
-			v.x % s.x,
-			v.y % s.x,
-			v.z % s.x);
+		return tvec3<T, P>(
+			v.x + scalar.x,
+			v.y + scalar.x,
+			v.z + scalar.x);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator%(T const & s, mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator+(T scalar, tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
-			s % v.x,
-			s % v.y,
-			s % v.z);
+		return tvec3<T, P>(
+			scalar + v.x,
+			scalar + v.y,
+			scalar + v.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator%(tvec1<T, P> const & s, mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator+(tvec1<T, P> const & scalar, tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
-			s.x % v.x,
-			s.x % v.y,
-			s.x % v.z);
+		return tvec3<T, P>(
+			scalar.x + v.x,
+			scalar.x + v.y,
+			scalar.x + v.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator%(mesh_rotation<T, P> const & v1, mesh_rotation<T, P> const & v2)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator+(tvec3<T, P> const & v1, tvec3<T, P> const & v2)
 	{
-		return mesh_rotation<T, P>(
+		return tvec3<T, P>(
+			v1.x + v2.x,
+			v1.y + v2.y,
+			v1.z + v2.z);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator-(tvec3<T, P> const & v, T scalar)
+	{
+		return tvec3<T, P>(
+			v.x - scalar,
+			v.y - scalar,
+			v.z - scalar);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator-(tvec3<T, P> const & v, tvec1<T, P> const & scalar)
+	{
+		return tvec3<T, P>(
+			v.x - scalar.x,
+			v.y - scalar.x,
+			v.z - scalar.x);
+	}
+
+	template <typename T, precision P> 
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator-(T scalar, tvec3<T, P> const & v)
+	{
+		return tvec3<T, P>(
+			scalar - v.x,
+			scalar - v.y,
+			scalar - v.z);
+	}
+
+	template <typename T, precision P> 
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator-(tvec1<T, P> const & scalar, tvec3<T, P> const & v)
+	{
+		return tvec3<T, P>(
+			scalar.x - v.x,
+			scalar.x - v.y,
+			scalar.x - v.z);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator-(tvec3<T, P> const & v1, tvec3<T, P> const & v2)
+	{
+		return tvec3<T, P>(
+			v1.x - v2.x,
+			v1.y - v2.y,
+			v1.z - v2.z);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator*(tvec3<T, P> const & v, T scalar)
+	{
+		return tvec3<T, P>(
+			v.x * scalar,
+			v.y * scalar,
+			v.z * scalar);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator*(tvec3<T, P> const & v, tvec1<T, P> const & scalar)
+	{
+		return tvec3<T, P>(
+			v.x * scalar.x,
+			v.y * scalar.x,
+			v.z * scalar.x);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator*(T scalar, tvec3<T, P> const & v)
+	{
+		return tvec3<T, P>(
+			scalar * v.x,
+			scalar * v.y,
+			scalar * v.z);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator*(tvec1<T, P> const & scalar, tvec3<T, P> const & v)
+	{
+		return tvec3<T, P>(
+			scalar.x * v.x,
+			scalar.x * v.y,
+			scalar.x * v.z);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator*(tvec3<T, P> const & v1, tvec3<T, P> const & v2)
+	{
+		return tvec3<T, P>(
+			v1.x * v2.x,
+			v1.y * v2.y,
+			v1.z * v2.z);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator/(tvec3<T, P> const & v, T scalar)
+	{
+		return tvec3<T, P>(
+			v.x / scalar,
+			v.y / scalar,
+			v.z / scalar);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator/(tvec3<T, P> const & v, tvec1<T, P> const & scalar)
+	{
+		return tvec3<T, P>(
+			v.x / scalar.x,
+			v.y / scalar.x,
+			v.z / scalar.x);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator/(T scalar, tvec3<T, P> const & v)
+	{
+		return tvec3<T, P>(
+			scalar / v.x,
+			scalar / v.y,
+			scalar / v.z);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator/(tvec1<T, P> const & scalar, tvec3<T, P> const & v)
+	{
+		return tvec3<T, P>(
+			scalar.x / v.x,
+			scalar.x / v.y,
+			scalar.x / v.z);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator/(tvec3<T, P> const & v1, tvec3<T, P> const & v2)
+	{
+		return tvec3<T, P>(
+			v1.x / v2.x,
+			v1.y / v2.y,
+			v1.z / v2.z);
+	}
+
+	// -- Binary bit operators --
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator%(tvec3<T, P> const & v, T scalar)
+	{
+		return tvec3<T, P>(
+			v.x % scalar,
+			v.y % scalar,
+			v.z % scalar);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator%(tvec3<T, P> const & v, tvec1<T, P> const & scalar)
+	{
+		return tvec3<T, P>(
+			v.x % scalar.x,
+			v.y % scalar.x,
+			v.z % scalar.x);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator%(T scalar, tvec3<T, P> const & v)
+	{
+		return tvec3<T, P>(
+			scalar % v.x,
+			scalar % v.y,
+			scalar % v.z);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator%(tvec1<T, P> const & scalar, tvec3<T, P> const & v)
+	{
+		return tvec3<T, P>(
+			scalar.x % v.x,
+			scalar.x % v.y,
+			scalar.x % v.z);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator%(tvec3<T, P> const & v1, tvec3<T, P> const & v2)
+	{
+		return tvec3<T, P>(
 			v1.x % v2.x,
 			v1.y % v2.y,
 			v1.z % v2.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator&(mesh_rotation<T, P> const & v, T const & s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator&(tvec3<T, P> const & v, T scalar)
 	{
-		return mesh_rotation<T, P>(
-			v.x & s,
-			v.y & s,
-			v.z & s);
+		return tvec3<T, P>(
+			v.x & scalar,
+			v.y & scalar,
+			v.z & scalar);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator&(mesh_rotation<T, P> const & v, tvec1<T, P> const & s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator&(tvec3<T, P> const & v, tvec1<T, P> const & scalar)
 	{
-		return mesh_rotation<T, P>(
-			v.x & s.x,
-			v.y & s.x,
-			v.z & s.x);
+		return tvec3<T, P>(
+			v.x & scalar.x,
+			v.y & scalar.x,
+			v.z & scalar.x);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator&(T const & s, mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator&(T scalar, tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
-			s & v.x,
-			s & v.y,
-			s & v.z);
+		return tvec3<T, P>(
+			scalar & v.x,
+			scalar & v.y,
+			scalar & v.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator&(tvec1<T, P> const & s, mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator&(tvec1<T, P> const & scalar, tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
-			s.x & v.x,
-			s.x & v.y,
-			s.x & v.z);
+		return tvec3<T, P>(
+			scalar.x & v.x,
+			scalar.x & v.y,
+			scalar.x & v.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator&(mesh_rotation<T, P> const & v1, mesh_rotation<T, P> const & v2)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator&(tvec3<T, P> const & v1, tvec3<T, P> const & v2)
 	{
-		return mesh_rotation<T, P>(
+		return tvec3<T, P>(
 			v1.x & v2.x,
 			v1.y & v2.y,
 			v1.z & v2.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator|(mesh_rotation<T, P> const & v, T const & s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator|(tvec3<T, P> const & v, T scalar)
 	{
-		return mesh_rotation<T, P>(
-			v.x | s,
-			v.y | s,
-			v.z | s);
+		return tvec3<T, P>(
+			v.x | scalar,
+			v.y | scalar,
+			v.z | scalar);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator|(mesh_rotation<T, P> const & v, tvec1<T, P> const & s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator|(tvec3<T, P> const & v, tvec1<T, P> const & scalar)
 	{
-		return mesh_rotation<T, P>(
-			v.x | s.x,
-			v.y | s.x,
-			v.z | s.x);
+		return tvec3<T, P>(
+			v.x | scalar.x,
+			v.y | scalar.x,
+			v.z | scalar.x);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator|(T const & s, mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator|(T scalar, tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
-			s | v.x,
-			s | v.y,
-			s | v.z);
+		return tvec3<T, P>(
+			scalar | v.x,
+			scalar | v.y,
+			scalar | v.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator|(tvec1<T, P> const & s, mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator|(tvec1<T, P> const & scalar, tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
-			s.x | v.x,
-			s.x | v.y,
-			s.x | v.z);
+		return tvec3<T, P>(
+			scalar.x | v.x,
+			scalar.x | v.y,
+			scalar.x | v.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator|(mesh_rotation<T, P> const & v1, mesh_rotation<T, P> const & v2)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator|(tvec3<T, P> const & v1, tvec3<T, P> const & v2)
 	{
-		return mesh_rotation<T, P>(
+		return tvec3<T, P>(
 			v1.x | v2.x,
 			v1.y | v2.y,
 			v1.z | v2.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator^(mesh_rotation<T, P> const & v, T const & s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator^(tvec3<T, P> const & v, T scalar)
 	{
-		return mesh_rotation<T, P>(
-			v.x ^ s,
-			v.y ^ s,
-			v.z ^ s);
+		return tvec3<T, P>(
+			v.x ^ scalar,
+			v.y ^ scalar,
+			v.z ^ scalar);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator^(mesh_rotation<T, P> const & v, tvec1<T, P> const & s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator^(tvec3<T, P> const & v, tvec1<T, P> const & scalar)
 	{
-		return mesh_rotation<T, P>(
-			v.x ^ s.x,
-			v.y ^ s.x,
-			v.z ^ s.x);
+		return tvec3<T, P>(
+			v.x ^ scalar.x,
+			v.y ^ scalar.x,
+			v.z ^ scalar.x);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator^(T const & s, mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator^(T scalar, tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
-			s ^ v.x,
-			s ^ v.y,
-			s ^ v.z);
+		return tvec3<T, P>(
+			scalar ^ v.x,
+			scalar ^ v.y,
+			scalar ^ v.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator^(tvec1<T, P> const & s, mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator^(tvec1<T, P> const & scalar, tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
-			s.x ^ v.x,
-			s.x ^ v.y,
-			s.x ^ v.z);
+		return tvec3<T, P>(
+			scalar.x ^ v.x,
+			scalar.x ^ v.y,
+			scalar.x ^ v.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator^(mesh_rotation<T, P> const & v1, mesh_rotation<T, P> const & v2)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator^(tvec3<T, P> const & v1, tvec3<T, P> const & v2)
 	{
-		return mesh_rotation<T, P>(
+		return tvec3<T, P>(
 			v1.x ^ v2.x,
 			v1.y ^ v2.y,
 			v1.z ^ v2.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator<<(mesh_rotation<T, P> const & v, T const & s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator<<(tvec3<T, P> const & v, T scalar)
 	{
-		return mesh_rotation<T, P>(
-			v.x << s,
-			v.y << s,
-			v.z << s);
+		return tvec3<T, P>(
+			v.x << scalar,
+			v.y << scalar,
+			v.z << scalar);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator<<(mesh_rotation<T, P> const & v, tvec1<T, P> const & s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator<<(tvec3<T, P> const & v, tvec1<T, P> const & scalar)
 	{
-		return mesh_rotation<T, P>(
-			v.x << s.x,
-			v.y << s.x,
-			v.z << s.x);
+		return tvec3<T, P>(
+			v.x << scalar.x,
+			v.y << scalar.x,
+			v.z << scalar.x);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator<<(T const & s, mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator<<(T scalar, tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
-			s << v.x,
-			s << v.y,
-			s << v.z);
+		return tvec3<T, P>(
+			scalar << v.x,
+			scalar << v.y,
+			scalar << v.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator<<(tvec1<T, P> const & s, mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator<<(tvec1<T, P> const & scalar, tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
-			s.x << v.x,
-			s.x << v.y,
-			s.x << v.z);
+		return tvec3<T, P>(
+			scalar.x << v.x,
+			scalar.x << v.y,
+			scalar.x << v.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator<<(mesh_rotation<T, P> const & v1, mesh_rotation<T, P> const & v2)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator<<(tvec3<T, P> const & v1, tvec3<T, P> const & v2)
 	{
-		return mesh_rotation<T, P>(
+		return tvec3<T, P>(
 			v1.x << v2.x,
 			v1.y << v2.y,
 			v1.z << v2.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator>>(mesh_rotation<T, P> const & v, T const & s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator>>(tvec3<T, P> const & v, T scalar)
 	{
-		return mesh_rotation<T, P>(
-			v.x >> s,
-			v.y >> s,
-			v.z >> s);
+		return tvec3<T, P>(
+			v.x >> scalar,
+			v.y >> scalar,
+			v.z >> scalar);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator>>(mesh_rotation<T, P> const & v, tvec1<T, P> const & s)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator>>(tvec3<T, P> const & v, tvec1<T, P> const & scalar)
 	{
-		return mesh_rotation<T, P>(
-			v.x >> s.x,
-			v.y >> s.x,
-			v.z >> s.x);
+		return tvec3<T, P>(
+			v.x >> scalar.x,
+			v.y >> scalar.x,
+			v.z >> scalar.x);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator>>(T const & s, mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator>>(T scalar, tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
-			s >> v.x,
-			s >> v.y,
-			s >> v.z);
+		return tvec3<T, P>(
+			scalar >> v.x,
+			scalar >> v.y,
+			scalar >> v.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator>>(tvec1<T, P> const & s, mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator>>(tvec1<T, P> const & scalar, tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
-			s.x >> v.x,
-			s.x >> v.y,
-			s.x >> v.z);
+		return tvec3<T, P>(
+			scalar.x >> v.x,
+			scalar.x >> v.y,
+			scalar.x >> v.z);
 	}
 
 	template <typename T, precision P>
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator>>(mesh_rotation<T, P> const & v1, mesh_rotation<T, P> const & v2)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator>>(tvec3<T, P> const & v1, tvec3<T, P> const & v2)
 	{
-		return mesh_rotation<T, P>(
+		return tvec3<T, P>(
 			v1.x >> v2.x,
 			v1.y >> v2.y,
 			v1.z >> v2.z);
 	}
 
 	template <typename T, precision P> 
-	GLM_FUNC_QUALIFIER mesh_rotation<T, P> operator~(mesh_rotation<T, P> const & v)
+	GLM_FUNC_QUALIFIER tvec3<T, P> operator~(tvec3<T, P> const & v)
 	{
-		return mesh_rotation<T, P>(
+		return tvec3<T, P>(
 			~v.x,
 			~v.y,
 			~v.z);
+	}
+
+	// -- Boolean operators --
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER bool operator==(tvec3<T, P> const & v1, tvec3<T, P> const & v2)
+	{
+		return (v1.x == v2.x) && (v1.y == v2.y) && (v1.z == v2.z);
+	}
+
+	template <typename T, precision P>
+	GLM_FUNC_QUALIFIER bool operator!=(tvec3<T, P> const & v1, tvec3<T, P> const & v2)
+	{
+		return (v1.x != v2.x) || (v1.y != v2.y) || (v1.z != v2.z);
+	}
+
+	template <precision P>
+	GLM_FUNC_QUALIFIER tvec3<bool, P> operator&&(tvec3<bool, P> const & v1, tvec3<bool, P> const & v2)
+	{
+		return tvec3<bool, P>(v1.x && v2.x, v1.y && v2.y, v1.z && v2.z);
+	}
+
+	template <precision P>
+	GLM_FUNC_QUALIFIER tvec3<bool, P> operator||(tvec3<bool, P> const & v1, tvec3<bool, P> const & v2)
+	{
+		return tvec3<bool, P>(v1.x || v2.x, v1.y || v2.y, v1.z || v2.z);
 	}
 }//namespace glm

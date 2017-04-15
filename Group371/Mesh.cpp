@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "Texture.h"
 
 
 Mesh::Mesh() {
@@ -45,6 +46,8 @@ void Mesh::addIndices(glm::ivec3 tri) {
 	v1.normal = normal;
 	v2.normal = normal;
 	v3.normal = normal;
+
+	calculateTangentsAndBitTangents(tri);
 }
 
 void Mesh::addVertices(const std::vector<Vertex> vertices) {
@@ -60,13 +63,51 @@ void Mesh::addIndices(const std::vector<int> indices) {
 }
 
 void Mesh::setColor(glm::vec4 color) {
+	// TODO: do we really need to make new vertices just to set the colors
 	std::vector<Vertex> newVertices;
 	for (std::vector<Vertex>::iterator it = vertices.begin(); it != vertices.end(); ++it) {
-		(*it).color = color;
+		it->color = color;
 		newVertices.push_back(*it);
 	}
 	vertices = newVertices;
 }
+
+void Mesh::setMaterial(const Material& material) {
+	// TODO: do we really need to make new vertices just to set the materials
+	std::vector<Vertex> newVertices;
+	for (std::vector<Vertex>::iterator it = vertices.begin(); it != vertices.end(); ++it) {
+		it->material = material;
+		it->textureMeta = { 0, 0 };
+		it->textureMaps = { -1, -1, -1, -1 };
+		newVertices.push_back(*it);
+	}
+	vertices = newVertices;
+
+}
+
+void Mesh::setTexture(Texture texture, float repeatX, float repeatY) {
+	this->texture = texture;
+	for (std::vector<Vertex>::iterator it = vertices.begin(); it != vertices.end(); ++it) {
+		// Enable textures for this vertex
+		it->textureMeta = { 1, 0 };
+		it->textureMaps = { texture.diffuseMap.mapId, texture.normalMap.mapId, texture.specularMap.mapId, texture.heightMap.mapId };
+		it->uv.x *= repeatX;
+		it->uv.y *= repeatX;
+	}
+}
+
+void Mesh::mix(Material material, Texture texture, float repeatX, float repeatY, int mix) {
+	this->texture = texture;
+	for (std::vector<Vertex>::iterator it = vertices.begin(); it != vertices.end(); ++it) {
+		// Enable textures for this vertex
+		it->textureMeta = { 2, mix };
+		it->material = material;
+		it->textureMaps = { texture.diffuseMap.mapId, texture.normalMap.mapId, texture.specularMap.mapId, texture.heightMap.mapId };
+		it->uv.x *= repeatX;
+		it->uv.y *= repeatX;
+	}
+}
+
 
 int Mesh::vertexBufferSize() {
 	return vertices.size() * sizeof(Vertex);
@@ -150,6 +191,8 @@ void Mesh::recalculateCenter() {
 void Mesh::recalculateNormals() {
 	for (int i = 0; i < indiceGroups.size(); i++) {
 		glm::ivec3 tri = indiceGroups.at(i);
+		// TODO: make this inline for performance
+		calculateTangentsAndBitTangents(tri);
 		Vertex& v1 = vertices.at(tri.x);
 		Vertex& v2 = vertices.at(tri.y);
 		Vertex& v3 = vertices.at(tri.z);
@@ -171,6 +214,44 @@ bool Mesh::operator!=(const Mesh& other) const {
 	return !(*this == other);
 }
 
+void Mesh::calculateTangentsAndBitTangents(glm::ivec3 tri) {
+	Vertex& v1 = vertices.at(tri.x);
+	Vertex& v2 = vertices.at(tri.y);
+	Vertex& v3 = vertices.at(tri.z);
+
+	glm::vec3 e1 = v2.position - v1.position;
+	glm::vec3 e2 = v3.position - v1.position;
+	glm::vec2 deltaUV1 = v2.uv - v1.uv;
+	glm::vec2 deltaUV2 = v3.uv - v1.uv;
+
+	GLfloat f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+	glm::vec3 tangent;
+	glm::vec3 bitangent;
+
+	tangent.x = f * (deltaUV2.y * e1.x - deltaUV1.y * e2.x);
+	tangent.y = f * (deltaUV2.y * e1.y - deltaUV1.y * e2.y);
+	tangent.z = f * (deltaUV2.y * e1.z - deltaUV1.y * e2.z);
+	tangent = glm::normalize(tangent);
+
+	bitangent.x = f * (-deltaUV2.x * e1.x + deltaUV1.x * e2.x);
+	bitangent.y = f * (-deltaUV2.x * e1.y + deltaUV1.x * e2.y);
+	bitangent.z = f * (-deltaUV2.x * e1.z + deltaUV1.x * e2.z);
+	bitangent = glm::normalize(bitangent);
+
+	v1.tangent = tangent;
+	v2.tangent = tangent;
+	v3.tangent = tangent;
+
+	v1.bitangent = bitangent;
+	v2.bitangent = bitangent;
+	v3.bitangent = bitangent;
+	
+	
+}
+
+
+
 GridMesh::GridMesh() {
 	// Size should be a power of 2
 	int size = 512;
@@ -182,7 +263,7 @@ GridMesh::GridMesh() {
 		for (int j = -(size / 2); j <= (size / 2); j++) {
 			
 			Vertex v(glm::vec3(i * divSize, 0, j * divSize));
-			v.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			v.material.ambient = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 			vertices.push_back(v);
 		}
 	}
@@ -208,17 +289,23 @@ GridMesh::~GridMesh() {}
 
 XYZAxis::XYZAxis() {
 
+	
+
 	// x is red
-	Vertex xOrigin(glm::vec3(0, 0, 0), glm::vec3(1, 0, 0));
-	Vertex xAxis(glm::vec3(10, 0, 0), glm::vec3(1, 0, 0));
+	Vertex xOrigin(glm::vec3(0, 0, 0));
+	Vertex xAxis(glm::vec3(10, 0, 0));
+	xOrigin.material.ambient = xAxis.material.ambient = RED;
+	
 
 	// y is green
-	Vertex yOrigin(glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-	Vertex yAxis(glm::vec3(0, 10, 0), glm::vec3(0, 1, 0));
+	Vertex yOrigin(glm::vec3(0, 0, 0));
+	Vertex yAxis(glm::vec3(0, 10, 0));
+	yOrigin.material.ambient = yAxis.material.ambient = GREEN;
 
 	// z is blue
-	Vertex zOrigin(glm::vec3(0, 0, 0), glm::vec3(0, 0, 1));
-	Vertex zAxis(glm::vec3(0, 0, 10), glm::vec3(0, 0, 1));
+	Vertex zOrigin(glm::vec3(0, 0, 0));
+	Vertex zAxis(glm::vec3(0, 0, 10));
+	zOrigin.material.ambient = zAxis.material.ambient = BLUE;
 
 	int top = 0;
 	vertices.push_back(xOrigin);

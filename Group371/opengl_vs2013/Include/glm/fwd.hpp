@@ -1,34 +1,5 @@
-///////////////////////////////////////////////////////////////////////////////////
-/// OpenGL Mathematics (glm.g-truc.net)
-///
-/// Copyright (c) 2005 - 2015 G-Truc Creation (www.g-truc.net)
-/// Permission is hereby granted, free of charge, to any person obtaining a copy
-/// of this software and associated documentation files (the "Software"), to deal
-/// in the Software without restriction, including without limitation the rights
-/// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-/// copies of the Software, and to permit persons to whom the Software is
-/// furnished to do so, subject to the following conditions:
-///
-/// The above copyright notice and this permission notice shall be included in
-/// all copies or substantial portions of the Software.
-///
-/// Restrictions:
-///		By making use of the Software for military purposes, you choose to make
-///		a Bunny unhappy.
-/// 
-/// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-/// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-/// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-/// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-/// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-/// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-/// THE SOFTWARE.
-///
 /// @ref core
 /// @file glm/fwd.hpp
-/// @date 2013-03-30 / 2013-03-31
-/// @author Christophe Riccio
-///////////////////////////////////////////////////////////////////////////////////
 
 #pragma once
 
@@ -124,9 +95,6 @@ namespace glm
 // GLM_GTC_precision
 namespace glm
 {
-	/// @addtogroup gtc_type_precision
-	/// @{
-
 	/// Low precision 8 bit signed integer type.
 	/// @see gtc_type_precision
 	typedef detail::int8 lowp_int8;
@@ -340,7 +308,7 @@ namespace glm
 	
 	/// Low precision 8 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i8, lowp> lowp_i8vec3;
+	typedef tvec3<i8, lowp> lowp_i8vec3;
 	
 	/// Low precision 8 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -357,7 +325,7 @@ namespace glm
 	
 	/// Medium precision 8 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i8, mediump> mediump_i8vec3;
+	typedef tvec3<i8, mediump> mediump_i8vec3;
 	
 	/// Medium precision 8 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -374,7 +342,7 @@ namespace glm
 	
 	/// High precision 8 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i8, highp> highp_i8vec3;
+	typedef tvec3<i8, highp> highp_i8vec3;
 	
 	/// High precision 8 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -419,7 +387,7 @@ namespace glm
 	
 	/// Low precision 16 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i16, lowp>		lowp_i16vec3;
+	typedef tvec3<i16, lowp>		lowp_i16vec3;
 	
 	/// Low precision 16 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -436,7 +404,7 @@ namespace glm
 	
 	/// Medium precision 16 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i16, mediump>		mediump_i16vec3;
+	typedef tvec3<i16, mediump>		mediump_i16vec3;
 	
 	/// Medium precision 16 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -453,7 +421,7 @@ namespace glm
 	
 	/// High precision 16 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i16, highp>		highp_i16vec3;
+	typedef tvec3<i16, highp>		highp_i16vec3;
 	
 	/// High precision 16 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -499,7 +467,7 @@ namespace glm
 	
 	/// Low precision 32 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i32, lowp>		lowp_i32vec3;
+	typedef tvec3<i32, lowp>		lowp_i32vec3;
 	
 	/// Low precision 32 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -516,7 +484,7 @@ namespace glm
 	
 	/// Medium precision 32 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i32, mediump>		mediump_i32vec3;
+	typedef tvec3<i32, mediump>		mediump_i32vec3;
 	
 	/// Medium precision 32 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -533,7 +501,7 @@ namespace glm
 	
 	/// High precision 32 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i32, highp>		highp_i32vec3;
+	typedef tvec3<i32, highp>		highp_i32vec3;
 	
 	/// High precision 32 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -578,7 +546,7 @@ namespace glm
 	
 	/// Low precision 32 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i32, lowp>		lowp_i32vec3;
+	typedef tvec3<i32, lowp>		lowp_i32vec3;
 	
 	/// Low precision 32 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -595,7 +563,7 @@ namespace glm
 	
 	/// Medium precision 32 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i32, mediump>		mediump_i32vec3;
+	typedef tvec3<i32, mediump>		mediump_i32vec3;
 	
 	/// Medium precision 32 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -612,7 +580,7 @@ namespace glm
 	
 	/// High precision 32 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i32, highp>		highp_i32vec3;
+	typedef tvec3<i32, highp>		highp_i32vec3;
 	
 	/// High precision 32 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -658,7 +626,7 @@ namespace glm
 	
 	/// Low precision 64 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i64, lowp>		lowp_i64vec3;
+	typedef tvec3<i64, lowp>		lowp_i64vec3;
 	
 	/// Low precision 64 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -675,7 +643,7 @@ namespace glm
 	
 	/// Medium precision 64 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i64, mediump>		mediump_i64vec3;
+	typedef tvec3<i64, mediump>		mediump_i64vec3;
 	
 	/// Medium precision 64 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -692,7 +660,7 @@ namespace glm
 	
 	/// High precision 64 bit signed integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<i64, highp>		highp_i64vec3;
+	typedef tvec3<i64, highp>		highp_i64vec3;
 	
 	/// High precision 64 bit signed integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -949,7 +917,7 @@ namespace glm
 	
 	/// Low precision 8 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u8, lowp> lowp_u8vec3;
+	typedef tvec3<u8, lowp> lowp_u8vec3;
 	
 	/// Low precision 8 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -966,7 +934,7 @@ namespace glm
 
 	/// Medium precision 8 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u8, mediump> mediump_u8vec3;
+	typedef tvec3<u8, mediump> mediump_u8vec3;
 
 	/// Medium precision 8 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -983,7 +951,7 @@ namespace glm
 
 	/// High precision 8 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u8, highp> highp_u8vec3;
+	typedef tvec3<u8, highp> highp_u8vec3;
 
 	/// High precision 8 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -1028,7 +996,7 @@ namespace glm
 
 	/// Low precision 16 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u16, lowp>		lowp_u16vec3;
+	typedef tvec3<u16, lowp>		lowp_u16vec3;
 
 	/// Low precision 16 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -1045,7 +1013,7 @@ namespace glm
 
 	/// Medium precision 16 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u16, mediump>		mediump_u16vec3;
+	typedef tvec3<u16, mediump>		mediump_u16vec3;
 
 	/// Medium precision 16 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -1062,7 +1030,7 @@ namespace glm
 
 	/// High precision 16 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u16, highp>		highp_u16vec3;
+	typedef tvec3<u16, highp>		highp_u16vec3;
 
 	/// High precision 16 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -1108,7 +1076,7 @@ namespace glm
 
 	/// Low precision 32 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u32, lowp>		lowp_u32vec3;
+	typedef tvec3<u32, lowp>		lowp_u32vec3;
 
 	/// Low precision 32 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -1125,7 +1093,7 @@ namespace glm
 
 	/// Medium precision 32 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u32, mediump>		mediump_u32vec3;
+	typedef tvec3<u32, mediump>		mediump_u32vec3;
 
 	/// Medium precision 32 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -1142,7 +1110,7 @@ namespace glm
 
 	/// High precision 32 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u32, highp>		highp_u32vec3;
+	typedef tvec3<u32, highp>		highp_u32vec3;
 
 	/// High precision 32 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -1187,7 +1155,7 @@ namespace glm
 
 	/// Low precision 32 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u32, lowp>		lowp_u32vec3;
+	typedef tvec3<u32, lowp>		lowp_u32vec3;
 
 	/// Low precision 32 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -1204,7 +1172,7 @@ namespace glm
 
 	/// Medium precision 32 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u32, mediump>		mediump_u32vec3;
+	typedef tvec3<u32, mediump>		mediump_u32vec3;
 
 	/// Medium precision 32 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -1221,7 +1189,7 @@ namespace glm
 
 	/// High precision 32 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u32, highp>		highp_u32vec3;
+	typedef tvec3<u32, highp>		highp_u32vec3;
 
 	/// High precision 32 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -1267,7 +1235,7 @@ namespace glm
 
 	/// Low precision 64 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u64, lowp>		lowp_u64vec3;
+	typedef tvec3<u64, lowp>		lowp_u64vec3;
 
 	/// Low precision 64 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -1284,7 +1252,7 @@ namespace glm
 
 	/// Medium precision 64 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u64, mediump>		mediump_u64vec3;
+	typedef tvec3<u64, mediump>		mediump_u64vec3;
 
 	/// Medium precision 64 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -1301,7 +1269,7 @@ namespace glm
 
 	/// High precision 64 bit unsigned integer vector of 3 components type.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<u64, highp>		highp_u64vec3;
+	typedef tvec3<u64, highp>		highp_u64vec3;
 
 	/// High precision 64 bit unsigned integer vector of 4 components type.
 	/// @see gtc_type_precision
@@ -1547,15 +1515,15 @@ namespace glm
 	typedef tvec1<float, lowp> lowp_vec1;
 
 	/// Low single-precision floating-point vector of 2 components.
-	/// @see gtc_type_precision
+	/// @see core_precision
 	typedef tvec2<float, lowp> lowp_vec2;
 
 	/// Low single-precision floating-point vector of 3 components.
-	/// @see gtc_type_precision
-	typedef mesh_rotation<float, lowp> lowp_vec3;
+	/// @see core_precision
+	typedef tvec3<float, lowp> lowp_vec3;
 
 	/// Low single-precision floating-point vector of 4 components.
-	/// @see gtc_type_precision
+	/// @see core_precision
 	typedef tvec4<float, lowp> lowp_vec4;
 
 	/// Low single-precision floating-point vector of 1 component.
@@ -1568,7 +1536,7 @@ namespace glm
 
 	/// Low single-precision floating-point vector of 3 components.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<float, lowp> lowp_fvec3;
+	typedef tvec3<float, lowp> lowp_fvec3;
 
 	/// Low single-precision floating-point vector of 4 components.
 	/// @see gtc_type_precision
@@ -1580,15 +1548,15 @@ namespace glm
 	typedef tvec1<float, mediump> mediump_vec1;
 
 	/// Medium Single-precision floating-point vector of 2 components.
-	/// @see gtc_type_precision
+	/// @see core_precision
 	typedef tvec2<float, mediump> mediump_vec2;
 
 	/// Medium Single-precision floating-point vector of 3 components.
-	/// @see gtc_type_precision
-	typedef mesh_rotation<float, mediump> mediump_vec3;
+	/// @see core_precision
+	typedef tvec3<float, mediump> mediump_vec3;
 
 	/// Medium Single-precision floating-point vector of 4 components.
-	/// @see gtc_type_precision
+	/// @see core_precision
 	typedef tvec4<float, mediump> mediump_vec4;
 
 	/// Medium single-precision floating-point vector of 1 component.
@@ -1601,7 +1569,7 @@ namespace glm
 
 	/// Medium Single-precision floating-point vector of 3 components.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<float, mediump> mediump_fvec3;
+	typedef tvec3<float, mediump> mediump_fvec3;
 
 	/// Medium Single-precision floating-point vector of 4 components.
 	/// @see gtc_type_precision
@@ -1613,15 +1581,15 @@ namespace glm
 	typedef tvec1<float, highp> highp_vec1;
 
 	/// High Single-precision floating-point vector of 2 components.
-	/// @see gtc_type_precision
+	/// @see core_precision
 	typedef tvec2<float, highp> highp_vec2;
 
 	/// High Single-precision floating-point vector of 3 components.
-	/// @see gtc_type_precision
-	typedef mesh_rotation<float, highp> highp_vec3;
+	/// @see core_precision
+	typedef tvec3<float, highp> highp_vec3;
 
 	/// High Single-precision floating-point vector of 4 components.
-	/// @see gtc_type_precision
+	/// @see core_precision
 	typedef tvec4<float, highp> highp_vec4;
 
 	/// High single-precision floating-point vector of 1 component.
@@ -1629,15 +1597,15 @@ namespace glm
 	typedef tvec1<float, highp> highp_fvec1;
 
 	/// High Single-precision floating-point vector of 2 components.
-	/// @see gtc_type_precision
+	/// @see core_precision
 	typedef tvec2<float, highp> highp_fvec2;
 
 	/// High Single-precision floating-point vector of 3 components.
-	/// @see gtc_type_precision
-	typedef mesh_rotation<float, highp> highp_fvec3;
+	/// @see core_precision
+	typedef tvec3<float, highp> highp_fvec3;
 
 	/// High Single-precision floating-point vector of 4 components.
-	/// @see gtc_type_precision
+	/// @see core_precision
 	typedef tvec4<float, highp> highp_fvec4;
 
 
@@ -1646,15 +1614,15 @@ namespace glm
 	typedef tvec1<f32, lowp> lowp_f32vec1;
 
 	/// Low single-precision floating-point vector of 2 components.
-	/// @see gtc_type_precision
+	/// @see core_precision
 	typedef tvec2<f32, lowp> lowp_f32vec2;
 
 	/// Low single-precision floating-point vector of 3 components.
-	/// @see gtc_type_precision
-	typedef mesh_rotation<f32, lowp> lowp_f32vec3;
+	/// @see core_precision
+	typedef tvec3<f32, lowp> lowp_f32vec3;
 
 	/// Low single-precision floating-point vector of 4 components.
-	/// @see gtc_type_precision
+	/// @see core_precision
 	typedef tvec4<f32, lowp> lowp_f32vec4;
 
 	/// Medium single-precision floating-point vector of 1 component.
@@ -1662,15 +1630,15 @@ namespace glm
 	typedef tvec1<f32, mediump> mediump_f32vec1;
 
 	/// Medium single-precision floating-point vector of 2 components.
-	/// @see gtc_type_precision
+	/// @see core_precision
 	typedef tvec2<f32, mediump> mediump_f32vec2;
 
 	/// Medium single-precision floating-point vector of 3 components.
-	/// @see gtc_type_precision
-	typedef mesh_rotation<f32, mediump> mediump_f32vec3;
+	/// @see core_precision
+	typedef tvec3<f32, mediump> mediump_f32vec3;
 
 	/// Medium single-precision floating-point vector of 4 components.
-	/// @see gtc_type_precision
+	/// @see core_precision
 	typedef tvec4<f32, mediump> mediump_f32vec4;
 
 	/// High single-precision floating-point vector of 1 component.
@@ -1683,7 +1651,7 @@ namespace glm
 
 	/// High single-precision floating-point vector of 3 components.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<f32, highp> highp_f32vec3;
+	typedef tvec3<f32, highp> highp_f32vec3;
 
 	/// High single-precision floating-point vector of 4 components.
 	/// @see gtc_type_precision
@@ -1700,7 +1668,7 @@ namespace glm
 
 	/// Low double-precision floating-point vector of 3 components.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<f64, lowp> lowp_f64vec3;
+	typedef tvec3<f64, lowp> lowp_f64vec3;
 
 	/// Low double-precision floating-point vector of 4 components.
 	/// @see gtc_type_precision
@@ -1716,7 +1684,7 @@ namespace glm
 
 	/// Medium double-precision floating-point vector of 3 components.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<f64, mediump> mediump_f64vec3;
+	typedef tvec3<f64, mediump> mediump_f64vec3;
 
 	/// Medium double-precision floating-point vector of 4 components.
 	/// @see gtc_type_precision
@@ -1732,7 +1700,7 @@ namespace glm
 
 	/// High double-precision floating-point vector of 3 components.
 	/// @see gtc_type_precision
-	typedef mesh_rotation<f64, highp> highp_f64vec3;
+	typedef tvec3<f64, highp> highp_f64vec3;
 
 	/// High double-precision floating-point vector of 4 components.
 	/// @see gtc_type_precision
@@ -2598,4 +2566,5 @@ namespace glm
 	/// @see gtc_type_precision
 	typedef highp_f64quat			f64quat;
 #endif
+
 }//namespace glm

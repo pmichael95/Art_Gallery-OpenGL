@@ -51,6 +51,7 @@ void Pedestal::finalize() {
 	manager.addMesh(this->top);
 	this->base.scaleMesh(glm::vec3(0.5f, 0.5f, 0.5f));
 	this->top->scaleMesh(glm::vec3(0.5f, 0.5f, 0.5f));
+	// Weird hack for the translate since it's messed up due to super shapes
 	this->top->translateMesh(glm::vec3(0.0f, 0.07f, 0.0f));
 	manager.computeMergedMesh();
 	Mesh computedMesh = manager.finalMesh;

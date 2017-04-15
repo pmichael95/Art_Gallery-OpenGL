@@ -1,10 +1,16 @@
 #pragma once
 #include "Room.h"
 #include "Hallway.h"
+#include "Texture.h"
+#include "Light.h"
+#include <unordered_map>
+
 class RoomGen : public Mesh {
 public:
-	RoomGen();
+	RoomGen(std::unordered_map<std::string, Texture>* textureMap, std::vector<Light>* lights);
 	~RoomGen();
+
+	glm::vec3 getRandomRoomPosition();
 private:
 	MeshManager manager;
 
@@ -28,7 +34,9 @@ private:
 
 	void removeFromVector(std::vector<Room*>&, Room*);
 
-	float ROOM_HEIGHT = 4.0f;
+	float ROOM_HEIGHT = 2.5f;
 	float MIN_TUNNEL_WIDTH = 1.5f;	//minimum width for a hallway
+
+	std::unordered_map<std::string, Texture>* textureMap;
 };
 

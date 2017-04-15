@@ -7,7 +7,7 @@ int main() {
 	srand(time(0));
 
 	//Title Display
-	Display display("Art Gallery", 800, 800, true);
+	Display display("Art Gallery", 1920, 1080, true);
 
 	// Set the shader for this diplay
 	Shader shader("shader.vert", "shader.frag");
@@ -22,7 +22,7 @@ int main() {
 
 	// Main game loop
 	while (!display.isClosed()) {
-		glPointSize(5);
+		glPointSize(10);
 		//draw
 		display.update();
 		display.clear(0.0f, 0.0f, 1.0f, 1.0f);

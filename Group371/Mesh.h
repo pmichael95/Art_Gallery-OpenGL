@@ -2,7 +2,7 @@
 #define MESH_H
 
 // GLEW
-//#include <GL/glew.h> // Include glew to get all the required OpenGL headers
+#include <GL/glew.h> // Include glew to get all the required OpenGL headers
 
 // GLFW
 #include <GLFW/glfw3.h>
@@ -11,9 +11,11 @@
 #include "Vertex.h"
 #include <glm/gtx/rotate_vector.hpp> 
 #include "Color.h"
+#include "Texture.h"
 
 
-// The struct that holds data about a mesh
+
+// The class that holds data about a mesh
 class Mesh {
 	friend class MeshManager;
 public:
@@ -24,7 +26,11 @@ public:
 	void addIndices(glm::ivec3 tri);
 	void addVertices(const std::vector<Vertex> vertices);
 	void addIndices(const std::vector<int> indices);
+	// TODO: deprecate this and move to setMaterial
 	void setColor(glm::vec4);
+	void setMaterial(const Material& material);
+	void setTexture(Texture texture, float repeatX=1.0, float repeatY=1.0);
+	void mix(Material material, Texture texture, float repeatX = 1.0, float repeatY = 1.0, int mix=50);
 	void reset();
 
 	Mesh copy();
@@ -42,6 +48,7 @@ public:
 	bool operator==(const Mesh&) const;
 	bool operator!=(const Mesh&) const;
 protected:
+	void calculateTangentsAndBitTangents(glm::ivec3 tri);
 	void updateVerticesFromTransform();
 	void recalculateCenter();
 	void recalculateNormals();
@@ -49,10 +56,10 @@ protected:
 	std::vector<int> indices;
 	std::vector<glm::ivec3> indiceGroups;
 	glm::mat4 transform;
-
 	glm::vec4 center;
 	glm::vec4 maxXYZ;
 	glm::vec4 minXYZ;
+	Texture texture;
 	
 };
 

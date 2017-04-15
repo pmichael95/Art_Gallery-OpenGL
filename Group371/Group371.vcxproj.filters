@@ -31,13 +31,12 @@
     <Filter Include="Source Files\shapes">
       <UniqueIdentifier>{37580aa3-67dc-473b-8b96-945b2c6797d5}</UniqueIdentifier>
     </Filter>
-
     <Filter Include="Source Files\Art Pieces">
       <UniqueIdentifier>{f87efdef-1af8-4221-980f-c94c13b2e21f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Art Pieces">
       <UniqueIdentifier>{288b6d29-ae57-4e03-8243-e420599a2a67}</UniqueIdentifier>
-
+    </Filter>
     <Filter Include="Header Files\Building">
       <UniqueIdentifier>{8aad1729-c25c-4a9d-bfde-3eaabfbc6acc}</UniqueIdentifier>
     </Filter>
@@ -100,9 +99,9 @@
     <ClInclude Include="Cone.h">
       <Filter>Header Files\shapes</Filter>
     </ClInclude>
-
     <ClInclude Include="Pedestal.h">
       <Filter>Header Files\Art Pieces</Filter>
+    </ClInclude>
     <ClInclude Include="Color.h">
       <Filter>Header Files\primitives</Filter>
     </ClInclude>
@@ -114,6 +113,18 @@
     </ClInclude>
     <ClInclude Include="Hallway.h">
       <Filter>Header Files\Building</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Header Files\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files\primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Painting.h">
+      <Filter>Header Files\Art Pieces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -162,10 +173,9 @@
     <ClCompile Include="Cone.cpp">
       <Filter>Source Files\shapes</Filter>
     </ClCompile>
-
     <ClCompile Include="Pedestal.cpp">
       <Filter>Source Files\Art Pieces</Filter>
-
+    </ClCompile>
     <ClCompile Include="Room.cpp">
       <Filter>Source Files\Building</Filter>
     </ClCompile>
@@ -174,7 +184,9 @@
     </ClCompile>
     <ClCompile Include="Hallway.cpp">
       <Filter>Source Files\Building</Filter>
-
+    </ClCompile>
+    <ClCompile Include="Painting.cpp">
+      <Filter>Source Files\Art Pieces</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,5 +196,7 @@
     <None Include="shader.vert">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="debug_shader.vert" />
+    <None Include="debug_shader.frag" />
   </ItemGroup>
 </Project>

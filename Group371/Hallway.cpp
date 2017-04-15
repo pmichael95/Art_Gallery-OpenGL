@@ -1,7 +1,7 @@
 #include "Hallway.h"
 
 
-Hallway::Hallway(float length, float width, float height, bool front, bool left, bool right) : length(length), width(width), height(height), left(left), right(right) {
+Hallway::Hallway(std::unordered_map<std::string, Texture>* textureMap, float length, float width, float height, bool front, bool left, bool right) : length(length), width(width), height(height), left(left), right(right), textureMap(textureMap) {
 	MeshManager manager;
 
 	if (length > width) {
@@ -20,11 +20,7 @@ Hallway::Hallway(float length, float width, float height, bool front, bool left,
 		edge.setLeft(!left);
 	if (right)
 		edge.setRight(!right);
-	edge.setLeftColor(glm::vec4(BLUE, 1.0f));
-	edge.setRightColor(glm::vec4(BLUE, 1.0f));
-	edge.setTopColor(glm::vec4(BLUE, 1.0f));
-	edge.setFrontColor(glm::vec4(BLUE, 1.0f));
-	edge.setBottomColor(glm::vec4(DARKORANGE, 1.0f));
+	setColors(edge);
 	edge.localScaleMesh(glm::vec3(width, height, length > width ? width : length));
 	if (length > width)
 		edge.translateMesh(glm::vec3(0.0f, 0.0f, (length - width) / 2.0f + (width / 2.0f)));
@@ -43,12 +39,17 @@ Hallway::~Hallway() {
 }
 
 void Hallway::setColors(Cube& cube) {
-	cube.setTopColor(glm::vec4(BEIGE, 1.0f));
-	cube.setBottomColor(glm::vec4(DARKORANGE, 1.0f));
-	cube.setLeftColor(glm::vec4(LAVENDER, 1.0f));
-	cube.setRightColor(glm::vec4(LAVENDER, 1.0f));
-	cube.setBackColor(glm::vec4(FORESTGREEN, 1.0f));
-	cube.setFrontColor(glm::vec4(BLUE, 1.0f));
+	int mix = 50;
+	float repeat = 3;
+	Material m = MATERIAL_EMERALD;
+	Material m2 = MATERIAL_RED_PLASTIC;
+
+	cube.setFaceTexture(CubeFace::front, textureMap->at("wall"), repeat, repeat);
+	cube.setFaceTexture(CubeFace::back, textureMap->at("wall"), repeat, repeat);
+	cube.setFaceMix(CubeFace::left, m, textureMap->at("wall"), repeat, repeat, 50);
+	cube.setFaceMix(CubeFace::right, m2, textureMap->at("wall"), repeat, repeat, 50);
+	cube.setFaceTexture(CubeFace::bottom, textureMap->at("floor"), length / 3.0f, 1);
+	cube.setFaceTexture(CubeFace::top, textureMap->at("wall"));
 }
 
 void Hallway::attach(Hallway h) {

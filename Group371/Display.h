@@ -7,9 +7,12 @@
 // GLFW
 #include <GLFW/glfw3.h>
 
+
 // other
 #include <string>
 #include <iostream>
+#include <unordered_map>
+
 #include "GLFWCallbackHandler.h"
 #include "Shader.h"
 #include "SharedData.h"
@@ -22,8 +25,11 @@
 #include "RandomShape.h"
 #include "Pedestal.h"
 #include "Color.h"
-#include "Painting.h"
 
+#include "Light.h"
+
+#include "Texture.h"
+#include "SOIL.h"
 
 
 class Display {
@@ -46,11 +52,18 @@ public:
 	// The window object that this display wraps around
 	GLFWwindow* window;
 private:
+	float windowHeight;
+	float windowWidth;
 	// Holds the camera for this display
 	// Holds he cmt transform struct that holds the m, v, and p matrices
 	SharedData sharedData;
 	// The camera that our display uses
 	Camera camera;
+	// The lights in our scene
+	std::vector<Light> lights;
+	float maxLightDistance = 30.0f;
+	int maxLights = 10;
+
 	// The transform
 	MVPTransform transform;
 	// The mesh manager
@@ -62,6 +75,11 @@ private:
 	Shader* shader; 
 	// The transformMatrix we are going to pass to our shader
 	GLint transformUniform;
+	// Used for normal mapping
+	GLint modelUniform;
+	GLint cameraPositionUniform;
+	
+
 	// id to the Buffer that store the vbo and ebo
 	GLuint VAO;
 	// id to the Buffer that stores our vertices
@@ -70,6 +88,7 @@ private:
 	GLuint EBO;
 	// init code
 	void initGL(std::string windowName, int width, int height);
+	void initTextures();
 	void initCamera();
 	void initGLBuffers();
 	void initSharedData();
@@ -80,11 +99,16 @@ private:
 	bool debugModeEnabled = false;
 	// The grid and axes meshes
 	DebugMeshManager debugMeshManager;
+
+	Shader* debugShader;
 	// Debug grid
 	GLuint DEBUG_VBO;
 	GLuint DEBUG_EBO;
 	void initDebugMeshes();
 	void debugUpdate();
+	// Maps texture texture names to Texture objects
+	// example "wood floor " would be the name, and the GLuint would be the corresponding id
+	std::unordered_map<std::string, Texture> textureMap;
 };
 
 #endif

@@ -12,15 +12,14 @@
 #include "Cylinder.h"
 #include "Cone.h"
 #include "MeshManager.h"
-
+#include <algorithm>
 
 
 class RandomShape : public Mesh {
 public:
 	RandomShape();
-	~RandomShape();
+	~RandomShape() {};
 private:
-	enum Shapes{CUBE,CYLINDER,CONE,SUPER};
 	Mesh Superform();
 	float superformula(double m, double n1, double n2, double n3, double angle, float a, float b);
 	float map(float value, float istart, float istop, float ostart, float ostop);
