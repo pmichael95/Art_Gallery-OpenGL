@@ -26,12 +26,14 @@ public:
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	void window_resize_callback(GLFWwindow* window, int width, int height);
+	void playFootStep(); // Plays footstep noise
 protected:
 	SharedData* sharedData;
 	int lastWidth;
 	int lastHeight;
 	double lastMouseXpos;
 	double lastMouseYpos;
+	bool ctrlPressed = false;
 };
 
 #endif // !GLFWCALLBACK_H

@@ -11,7 +11,6 @@
 // other
 #include <string>
 #include <iostream>
-#include <unordered_map>
 
 #include "GLFWCallbackHandler.h"
 #include "Shader.h"
@@ -61,8 +60,10 @@ private:
 	Camera camera;
 	// The lights in our scene
 	std::vector<Light> lights;
-	float maxLightDistance = 30.0f;
-	int maxLights = 10;
+	
+
+	float maxLightDistance = 25.0f;
+	int maxLights = 50;
 
 	// The transform
 	MVPTransform transform;
@@ -106,9 +107,6 @@ private:
 	GLuint DEBUG_EBO;
 	void initDebugMeshes();
 	void debugUpdate();
-	// Maps texture texture names to Texture objects
-	// example "wood floor " would be the name, and the GLuint would be the corresponding id
-	std::unordered_map<std::string, Texture> textureMap;
 };
 
 #endif

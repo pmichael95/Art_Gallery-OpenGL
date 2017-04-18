@@ -126,6 +126,12 @@
     <ClInclude Include="Painting.h">
       <Filter>Header Files\Art Pieces</Filter>
     </ClInclude>
+    <ClInclude Include="BoundingBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Bench.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GLFWCallbackHandler.cpp">
@@ -187,6 +193,12 @@
     </ClCompile>
     <ClCompile Include="Painting.cpp">
       <Filter>Source Files\Art Pieces</Filter>
+    </ClCompile>
+    <ClCompile Include="Bench.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\primitives</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

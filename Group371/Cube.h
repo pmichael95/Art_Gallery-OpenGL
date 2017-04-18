@@ -42,9 +42,8 @@ public:
 	void setFaceMaterial(CubeFace face, const Material material);
 	void setFaceTexture(CubeFace face, Texture texture, float repeatX = 1.0, float repeatY = 1.0);
 	void setFaceMix(CubeFace face, Material material, Texture texture, float repeatX = 1.0, float repeatY = 1.0, int mix = 50);
-	
-	// Sets material for all faces
 
+	virtual std::vector<BoundingBox> getBoundingBox();
 private:
 	void onChange();
 	Mesh* faceSwith(CubeFace face);

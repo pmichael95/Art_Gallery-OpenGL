@@ -13,10 +13,19 @@ Display::Display(std::string title, int width, int height, bool enableDebugging)
 	if (debugModeEnabled){
 		initDebugMeshes();
 	}
-	
-	RoomGen rooms(&textureMap, &lights);
+
+	std::vector<BoundingBox> boxes;
+
+	RoomGen rooms(&lights);
 	meshManager.addMesh(&rooms);
-	sharedData.camera->setPosition(rooms.getRandomRoomPosition());
+	glm::vec3 roomPos = rooms.getRandomRoomPosition();
+	roomPos.y = Camera::HEIGHT;
+	sharedData.camera->setPosition(roomPos);
+	for (BoundingBox box : rooms.getBoundingBox()) {
+		boxes.push_back(box);
+	}
+
+	sharedData.camera->collision_boxes = boxes;
 	meshManager.computeMergedMesh();
 }
 
@@ -66,6 +75,8 @@ void Display::update() {
 	glUniformMatrix4fv(transformUniform, 1, GL_FALSE, value_ptr(sharedData.transform->getTransform()));
 	glUniformMatrix4fv(modelUniform, 1, GL_FALSE, value_ptr(sharedData.transform->model));
 	glUniform3f(cameraPositionUniform, cameraPos.x, cameraPos.y, cameraPos.z);
+
+	sortNearest(lights, cameraPos);
 	
 	// Pass lights
 	int fragmentLightIndex = 0;
@@ -75,7 +86,7 @@ void Display::update() {
 		if (fragmentLightIndex > maxLights) {
 			break; // We've reached  max lights in our shader
 		}
-		if (abs(glm::distance(light.position , cameraPos)) < maxLightDistance) {
+		//if (abs(glm::distance(light.position , cameraPos)) < maxLightDistance) {
 			glUniform3f(glGetUniformLocation(shader->Program, std::string("lights[").append(std::to_string(fragmentLightIndex) + "].position").c_str()), light.position.x, light.position.y, light.position.z);
 			glUniform3f(glGetUniformLocation(shader->Program, std::string("lights[").append(std::to_string(fragmentLightIndex) + "].ambient").c_str()), light.ambient.r, light.ambient.g, light.ambient.b);
 			glUniform3f(glGetUniformLocation(shader->Program, std::string("lights[").append(std::to_string(fragmentLightIndex) + "].diffuse").c_str()), light.diffuse.r, light.diffuse.g, light.diffuse.b);
@@ -85,14 +96,33 @@ void Display::update() {
 			glUniform1f(glGetUniformLocation(shader->Program, std::string("lights[").append(std::to_string(fragmentLightIndex) + "].linear").c_str()), light.linear);
 			glUniform1f(glGetUniformLocation(shader->Program, std::string("lights[").append(std::to_string(fragmentLightIndex) + "].quadratic").c_str()), light.quadratic);
 			fragmentLightIndex++;
-		}
+		//}
 		
 	}
 
 	
 
 	// Pass textures
-	for (std::unordered_map<std::string, Texture>::value_type& texture : textureMap) {
+	//int i = 0;
+	//for (std::pair<std::string, Texture>& texture : Texture::textures) {
+
+	//	// Load the diffuse/normal/specular maps
+	//	TextureMap* maps[] = { &texture.second.diffuseMap, &texture.second.normalMap, &texture.second.specularMap, &texture.second.heightMap };
+	//	
+	//	for (int j = 0; j < 4; j++) {
+	//		TextureMap* map = maps[j];
+	//		glActiveTexture(GL_TEXTURE0 + map->mapId - 1);
+	//		glBindTexture(GL_TEXTURE_2D, map->mapId);
+	//		int index = (i * 4) + j;
+	//		glUniform1i(
+	//			glGetUniformLocation(
+	//				shader->Program, 
+	//				std::string("textures[").append(std::to_string(index)).c_str() ),
+	//			map->mapId - 1);
+	//	}
+	//	i++;
+	//}
+	for (std::pair<std::string, Texture>& texture : Texture::textures) {
 
 		// Load the diffuse/normal/specular maps
 		TextureMap* maps[] = { &texture.second.diffuseMap, &texture.second.normalMap, &texture.second.specularMap, &texture.second.heightMap };
@@ -101,9 +131,10 @@ void Display::update() {
 			glBindTexture(GL_TEXTURE_2D, map->mapId);
 			std::string uni = std::string(textureToUniform(texture.first, map->mapType));
 			glUniform1i(glGetUniformLocation(shader->Program, uni.c_str()), map->mapId - 1);
-			
+
 		}
 	}
+	
 
 
 
@@ -203,30 +234,33 @@ void Display::initTextures() {
 	texture1.uvWrap = glm::ivec2(GL_REPEAT, GL_REPEAT);
 	texture1.maxFilter = GL_NEAREST;
 	texture1.minFilter = GL_NEAREST;
-
 	
 	std::string t2 = "wall2";
-
 	Texture texture2("textures/" + t2 + "/", t2, "jpg");
 	texture2.uvWrap = glm::ivec2(GL_REPEAT, GL_REPEAT);
 	texture2.maxFilter = GL_NEAREST;
 	texture2.minFilter = GL_NEAREST;
 
 
-	std::string t3 = "copper";
-
+	std::string t3 = "brickwall2";
 	Texture texture3("textures/" + t3 + "/", t3, "jpg");
 	texture3.uvWrap = glm::ivec2(GL_REPEAT, GL_REPEAT);
 	texture3.maxFilter = GL_NEAREST;
 	texture3.minFilter = GL_NEAREST;
 
+	std::string t4 = "marble";
+	Texture texture4("textures/" + t4 + "/", t4, "jpg");
+	texture4.uvWrap = glm::ivec2(GL_REPEAT, GL_REPEAT);
+	texture4.maxFilter = GL_NEAREST;
+	texture4.minFilter = GL_NEAREST;
 
-	
-	textureMap.emplace("wall", texture2);
-	textureMap.emplace("floor", texture1);
-	textureMap.emplace("frame", texture3);
 
-	for (std::unordered_map<std::string, Texture>::value_type& texture : textureMap) {
+	Texture::textures.push_back(std::pair<std::string, Texture>("floor", texture1));
+	Texture::textures.push_back(std::pair<std::string, Texture>("wall", texture2));
+	Texture::textures.push_back(std::pair<std::string, Texture>("brick", texture3));
+	Texture::textures.push_back(std::pair<std::string, Texture>("pedestal", texture4));
+
+	for (std::pair<std::string, Texture>& texture : Texture::textures) {
 		// Load the diffuse/normal/specular/height maps
 		TextureMap* maps[] = { &texture.second.diffuseMap, &texture.second.normalMap, &texture.second.specularMap, &texture.second.heightMap };
 		for (TextureMap* map : maps) {

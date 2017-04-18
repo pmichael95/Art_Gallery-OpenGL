@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/vec2.hpp>
 #include <string>
+#include <vector>
 
 enum TexturMapType {
 	diffuseMap,
@@ -50,7 +51,8 @@ struct HeightMap :  public TextureMap {
 	HeightMap() { mapType = heightMap; };
 };
 
-struct Texture {
+class Texture {
+public:
 	Texture() {
 	}
 	Texture(std::string diffuse, std::string normal, std::string specular, std::string heightMap) {
@@ -75,6 +77,14 @@ struct Texture {
 	glm::ivec2 uvWrap;
 	int minFilter;
 	int maxFilter;
+	static std::vector<std::pair<std::string, Texture>> textures;
+	static Texture getTexture(std::string name) {
+		for (std::pair<std::string, Texture> t : textures) {
+			if (name == t.first)
+				return t.second;
+		}
+		return Texture();
+	}
 };
 
 #endif

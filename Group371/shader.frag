@@ -36,17 +36,17 @@ in float frag_shininess;
 in mat3 TBN;
 
 
+#define POINT_LIGHT_COUNT 50
 
+// This doenst work 
+//#define TEXTURE_COUNT 4
+//#define TEXTURE_MAP_COUNT 4
+//uniform sampler2D textures[TEXTURE_COUNT * TEXTURE_MAP_COUNT];
 
 uniform vec4 camera_position;
-
-#define POINT_LIGHT_COUNT 10
 uniform Light lights[POINT_LIGHT_COUNT];
 
 
-out vec4 color;
-
-// Texture samplers
 uniform sampler2D floor_d;
 uniform sampler2D floor_n;
 uniform sampler2D floor_s;
@@ -57,14 +57,23 @@ uniform sampler2D wall_n;
 uniform sampler2D wall_s;
 uniform sampler2D wall_h;
 
-uniform sampler2D frame_d;
-uniform sampler2D frame_n;
-uniform sampler2D frame_s;
-uniform sampler2D frame_h;
+uniform sampler2D brick_d;
+uniform sampler2D brick_n;
+uniform sampler2D brick_s;
+uniform sampler2D brick_h;
+
+uniform sampler2D pedestal_d;
+uniform sampler2D pedestal_n;
+uniform sampler2D pedestal_s;
+uniform sampler2D pedestal_h;
 
 
-vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, sampler2D depthMap)
-{ 
+out vec4 color;
+
+
+
+
+vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, sampler2D depthMap) { 
      // number of depth layers
     const float minLayers = 10;
 	const float maxLayers = 20;
@@ -75,13 +84,12 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, sampler2D depthMap)
     float currentLayerDepth = 0.0;
     // the amount to shift the texture coordinates per layer (from vector P)
 	// This is the height scale
-    vec2 P = viewDir.xy * 0.125; 
+    vec2 P = viewDir.xy * 0.0125; 
     vec2 deltaTexCoords = P / numLayers;
 	vec2  currentTexCoords     = texCoords;
 	float currentDepthMapValue = texture(depthMap, currentTexCoords).r;
   
-	while(currentLayerDepth < currentDepthMapValue)
-	{
+	while(currentLayerDepth < currentDepthMapValue) {
 		// shift texture coordinates along direction of P
 		currentTexCoords -= deltaTexCoords;
 		// get depthmap value at current texture coordinates
@@ -104,8 +112,9 @@ vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir, sampler2D depthMap)
   
 }
 
-void main()
-{
+
+
+void main() {
 
 	Material m;
 	
@@ -113,11 +122,8 @@ void main()
 	vec3 pos3 = vec3(frag_position);
 	vec3 camera_pos3 = vec3(camera_position);
 	vec3 normal;
-	// Convert to tangent space
-	camera_pos3 = TBN * camera_pos3;
-	pos3  = TBN * pos3;
-	vec3 viewDir = normalize(camera_pos3 - pos3);
-	vec2 uv = frag_textureUV;
+	vec3 viewDir;
+	
 	
 
 	if (frag_textureMeta.x == 0) {
@@ -128,8 +134,26 @@ void main()
 		m.shininess = frag_shininess;
 		normal = frag_normal;
 	} else {
+	// Convert to tangent space
+		camera_pos3 = TBN * camera_pos3;
+		pos3  = TBN * pos3;
+		viewDir = normalize(camera_pos3 - pos3);
+		vec2 uv = frag_textureUV;
 
 		// Use the texture
+		//int textureIndex = (frag_textureID.x - 1);
+		//int diffuseMapIndex = textureIndex;
+		//int normalMapIndex = textureIndex + 1;
+		//int specularMapIndex = textureIndex + 2;
+		//int heightMapIndex = textureIndex + 3;
+		//uv = ParallaxMapping(uv,  viewDir, textureToSampler(heightMapIndex));
+		//m.ambient = vec3(texture2D(textureToSampler(diffuseMapIndex), uv));
+		//m.diffuse = vec3(texture2D(textureToSampler(diffuseMapIndex), uv));
+		//m.specular = vec3(texture2D(textureToSampler(specularMapIndex), uv));
+		//m.shininess = 256.0f;
+		//normal = texture(textureToSampler(normalMapIndex), uv).rgb;
+
+		// This is terrible, but is the only solution that works across multiple graphics cards
 		if (frag_textureID.x == 1) {
 			uv = ParallaxMapping(uv,  viewDir, floor_h);
 			m.ambient = vec3(texture2D(floor_d, uv));
@@ -147,14 +171,29 @@ void main()
 		}
 
 		if (frag_textureID.x == 9) {
-			uv = ParallaxMapping(uv,  viewDir, frame_h);
-			m.ambient = vec3(texture2D(frame_d, uv));
-			m.diffuse = vec3(texture2D(frame_d, uv));
-			m.specular = vec3(texture2D(frame_s, uv));
+			uv = ParallaxMapping(uv,  viewDir, brick_h);
+			m.ambient = vec3(texture2D(brick_d, uv));
+			m.diffuse = vec3(texture2D(brick_d, uv));
+			m.specular = vec3(texture2D(brick_s, uv));
 			m.shininess = 200.0f;
-			normal = texture(wall_n, uv).rgb;
+			normal = texture(brick_n, uv).rgb;
 		}
-		// mix
+
+		if (frag_textureID.x == 13) {
+			uv = ParallaxMapping(uv,  viewDir, pedestal_h);
+			m.ambient = vec3(texture2D(pedestal_d, uv));
+			m.diffuse = vec3(texture2D(pedestal_d, uv));
+			m.specular = vec3(texture2D(pedestal_s, uv));
+			m.shininess = 200.0f;
+			normal = texture(pedestal_n, uv).rgb;
+		}
+
+		
+
+		// Currently in range of [0,1]
+		// Now convert to range [-1,1]
+		normal = normalize(normal * 2.0 - 1.0);
+
 		if (frag_textureMeta.x == 2) {
 			float mixValue = frag_textureMeta.y / 100.0f;
 			m.ambient = mix(m.ambient, frag_ambient, mixValue);
@@ -163,18 +202,18 @@ void main()
 			// Average shiniess
 			m.shininess = (m.shininess + frag_shininess) / 2;
 		}
-		// Currently in range of [0,1]
-		// Now convert to range [-1,1]
-		normal = normalize(normal * 2.0 - 1.0);
-		
-		
 	}
+	
 
 	vec4 result;
 	for(int i = 0; i < POINT_LIGHT_COUNT; i++) {
 	
 		Light light = lights[i];
-		light.position = TBN * light.position ;
+
+		if (frag_textureMeta.x != 0) {
+			light.position = TBN * light.position ;
+		}
+
 		// If there is no light here
 		if (light.constant >= 1.0) {
 		

@@ -12,7 +12,7 @@
 #include <glm/gtx/rotate_vector.hpp> 
 #include "Color.h"
 #include "Texture.h"
-
+#include "BoundingBox.h"
 
 
 // The class that holds data about a mesh
@@ -43,10 +43,21 @@ public:
 	void localScaleMesh(glm::vec3 scale);
 	void rotateMesh(float radians, glm::vec3 rotate);
 	void localRotateMesh(float radians, glm::vec3 rotate);
-	void translateMesh(glm::vec3 translate);
+	virtual void translateMesh(glm::vec3 translate);
 
 	bool operator==(const Mesh&) const;
 	bool operator!=(const Mesh&) const;
+
+	virtual std::vector<BoundingBox> getBoundingBox() {
+		std::vector<BoundingBox> b;
+		BoundingBox box;
+		box.max = glm::vec3(maxXYZ.x, maxXYZ.y, maxXYZ.z);
+		box.min = glm::vec3(minXYZ.x, minXYZ.y, minXYZ.z);
+		b.push_back(box);
+		return b;
+	};
+	glm::vec4 maxXYZ;
+	glm::vec4 minXYZ;
 protected:
 	void calculateTangentsAndBitTangents(glm::ivec3 tri);
 	void updateVerticesFromTransform();
@@ -57,10 +68,7 @@ protected:
 	std::vector<glm::ivec3> indiceGroups;
 	glm::mat4 transform;
 	glm::vec4 center;
-	glm::vec4 maxXYZ;
-	glm::vec4 minXYZ;
 	Texture texture;
-	
 };
 
 class GridMesh : public Mesh {

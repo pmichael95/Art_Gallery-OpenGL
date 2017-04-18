@@ -7,7 +7,7 @@ int main() {
 	srand(time(0));
 
 	//Title Display
-	Display display("Art Gallery", 1920, 1080, true);
+	Display display("Art Gallery", 800, 800, true);
 
 	// Set the shader for this diplay
 	Shader shader("shader.vert", "shader.frag");
@@ -18,7 +18,7 @@ int main() {
 	GLFWCallback callback;
 	handler->callback = &callback;
 	display.setHandler(handler);
-
+	glEnable(GL_POLYGON_SMOOTH);
 
 	// Main game loop
 	while (!display.isClosed()) {

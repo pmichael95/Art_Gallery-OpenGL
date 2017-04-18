@@ -11,8 +11,14 @@ Cone::Cone(int sides) {
 		sides = 3;
 	}
 	float rotationAngle = glm::radians(360.0f) / sides;
+
+	
+
 	Vertex originTop(glm::vec3(0,0.5,0));
 	Vertex originBottom(glm::vec3(0, -0.5, 0));
+
+	originTop.uv = glm::vec2(0.5, 0.5);
+	originBottom.uv = glm::vec2(0.5, 0.5);
 
 	Vertex rotationPoint(glm::vec3(0.5, -0.5, 0));
 
@@ -20,6 +26,14 @@ Cone::Cone(int sides) {
 	for (int i = 0; i < sides; i++) {
 		Vertex nextRotationPoint;
 		nextRotationPoint.position = glm::rotateY(rotationPoint.position, rotationAngle);
+
+		float uvRotation = i * rotationAngle;
+		float nextUvRotation = (i + 1) * rotationAngle;
+
+		rotationPoint.uv = glm::vec2(glm::cos(uvRotation) * 0.5 + 0.5, glm::sin(uvRotation) * 0.5 + 0.5);
+		nextRotationPoint.uv = glm::vec2(glm::cos(nextUvRotation) * 0.5 + 0.5, glm::sin(nextUvRotation) * 0.5 + 0.5);
+
+
 		addVertex(originBottom);
 		addVertex(rotationPoint);
 		addVertex(nextRotationPoint);

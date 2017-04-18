@@ -15,12 +15,16 @@ Cylinder::Cylinder(int sides) {
 	float rotationAngle = glm::radians(360.0f) / sides;
 
 	Vertex originTop(glm::vec3(0, 0.5f, 0));
+	originTop.uv = glm::vec2(0.5, 0.5);
 	Vertex originBottom(glm::vec3(0, -0.5f, 0));
+	originBottom.uv = glm::vec2(0.5, 0.5);
 
 	Vertex rotationPointTop(glm::vec3(0.5f, 0.5f, 0));
 	Vertex rotationPointBottom(glm::vec3(0.5f, -0.5f, 0));
 	Vertex rotationPointTopDup(glm::vec3(0.5f, 0.5f, 0));
 	Vertex rotationPointBottomDup(glm::vec3(0.5f, -0.5f, 0));
+
+	
 	
 
 	int size = 0;
@@ -36,6 +40,29 @@ Cylinder::Cylinder(int sides) {
 
 		nextRotationPointTopDup.position = nextRotationPointTop.position;
 		nextRotationPointBottomDup.position = nextRotationPointBottom.position;
+
+
+
+		// Uv solve
+		float uvRotation = i * rotationAngle;
+		float nextUvRotation = (i + 1) * rotationAngle;
+
+		rotationPointTop.uv = glm::vec2(glm::cos(uvRotation) * 0.5 + 0.5, glm::sin(uvRotation) * 0.5 + 0.5);;
+		nextRotationPointTop.uv = glm::vec2(glm::cos(nextUvRotation) * 0.5 + 0.5, glm::sin(nextUvRotation) * 0.5 + 0.5);
+
+
+		rotationPointBottom.uv = rotationPointTop.uv;
+		nextRotationPointBottom.uv = nextRotationPointTop.uv;
+		nextRotationPointBottomDup.uv = nextRotationPointBottom.uv;
+
+
+		rotationPointTopDup.uv = glm::vec2((1.0 * i) / sides, 1);
+		rotationPointBottomDup.uv = glm::vec2((1.0 * i) / sides, 0);
+		nextRotationPointTopDup.uv = glm::vec2((1.0 * (i + 1))/ sides, 1);
+		nextRotationPointBottomDup.uv = glm::vec2((1.0 * (i + 1)) / sides, 0);
+		
+
+
 
 		// Top face
 		addVertex(originTop);

@@ -198,4 +198,20 @@
 #define MATERIAL_YELLOW_RUBBER	Material {glm::vec3(0.05	,0.05	,0.0	), glm::vec3(0.5	,0.5		,0.4		), glm::vec3(0.7		,0.7		,0.04		),0.078125f * 128};
 
 
+
+
+static Material randomMaterial() {
+	float newRed = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX));
+	float newGreen = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX));
+	float newBlue = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX));
+
+	Material m;
+	m.ambient = glm::vec3(newRed, newGreen, newBlue);
+	m.diffuse= glm::vec3(newRed, newGreen, newBlue);
+	m.specular = glm::vec3(1, 1, 1);
+	m.shininess = 128;
+	return m;
+}
+
+
 #endif // !COLOR

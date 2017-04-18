@@ -3,24 +3,37 @@
 
 #include "Cube.h"
 #include "MeshManager.h"
-#include <unordered_map>
 #include "Texture.h"
 
 class Hallway : public Mesh {
 public:
-	Hallway(std::unordered_map<std::string, Texture>* textureMap, float length, float width, float height, bool front, bool left = true, bool right = true);
+	enum HallwayDirection { HORIZONTAL, VERTICAL };
+
+	Hallway(HallwayDirection direction, float length, float width, float height, bool front, bool left = true, bool right = true);
 	~Hallway();
 
-	void attach(Hallway);
+	void attach(Hallway*);
+	std::vector<BoundingBox> getBoundingBox();
+	void translateMesh(glm::vec3 translate);
 private:
+	void createHorizontalHallway();
+	void createVerticalHallway();
+
+	MeshManager manager;
+	void onChange();
+
 	void setColors(Cube&);
 	float length;
 	float width;
 	float height;
 	bool left;
 	bool right;
+	bool front;
+	HallwayDirection direction;
 
-	std::unordered_map<std::string, Texture> * textureMap;
+	Cube* hallway;
+	Cube* edge;
+	std::vector<Hallway*> attachments;
 };
 
 #endif // !HALLWAY_H

@@ -21,7 +21,7 @@ public:
 	~RandomShape() {};
 private:
 	Mesh Superform();
-	float superformula(double m, double n1, double n2, double n3, double angle, float a, float b);
+	float superformula(float a, float b, float m1, float m2, float n1, float n2, float n3, float angle);
 	float map(float value, float istart, float istop, float ostart, float ostop);
 };
 

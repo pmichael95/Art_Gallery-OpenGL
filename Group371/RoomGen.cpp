@@ -1,8 +1,11 @@
 #include "RoomGen.h"
 #include <iostream>
 #include <utility>
+#include <list>
 
-RoomGen::RoomGen(std::unordered_map<std::string, Texture>* textureMap, std::vector<Light>* lights) : textureMap(textureMap)
+const float RoomGen::ROOM_HEIGHT = 7.0f;
+
+RoomGen::RoomGen(std::vector<Light>* lights)
 {
 	int maxSize = 20; // max width/length of a room
 	int minSize = 10; // min width/length of a room
@@ -14,35 +17,25 @@ RoomGen::RoomGen(std::unordered_map<std::string, Texture>* textureMap, std::vect
 	int density = 200; // density of rooms, this is the # of attempts of placing a room.
 	
 	/*
-	Room* a = new Room(textureMap, 7.0f, 4.0f, 4.0f, -6.5f, 3.0f);
-	manager.addMesh(a);
+	Room* a = new Room(textureMap, 7.0f, 4.0f, ROOM_HEIGHT, -6.5f, 3.0f);
 	rooms.push_back(a);
 	Room* b = new Room(textureMap, 6.0f, 3.5f, ROOM_HEIGHT, 4.0f, 2.0f);
-	manager.addMesh(b);
 	rooms.push_back(b);
 	Room* c = new Room(textureMap, 10.0f, 6.0f, ROOM_HEIGHT, -8.0f, -8.0f);
-	manager.addMesh(c);
 	rooms.push_back(c);
 	Room* d = new Room(textureMap, 5.0f, 5.0f, ROOM_HEIGHT, -13.0f, 11.0f);
-	manager.addMesh(d);
 	rooms.push_back(d);
 	Room* e = new Room(textureMap, 7.0f, 4.0f, ROOM_HEIGHT, -15.5f, 3.0f);
-	manager.addMesh(e);
 	rooms.push_back(e);
 	Room* f = new Room(textureMap, 8.0f, 8.0f, ROOM_HEIGHT, 17.0f, 14.0f);
-	manager.addMesh(f);
 	rooms.push_back(f);
 	Room* g = new Room(textureMap, 4.0f, 5.0f, ROOM_HEIGHT, -8.0f, 11.0f);
-	manager.addMesh(g);
 	rooms.push_back(g);
 	Room* h = new Room(textureMap, 8.0f, 8.0f, ROOM_HEIGHT, 17.0f, -14.0f);
-	manager.addMesh(h);
 	rooms.push_back(h);
 	Room* j = new Room(textureMap, 16.0f, 12.0f, ROOM_HEIGHT, 19.0f, -30.0f);
-	manager.addMesh(j);
 	rooms.push_back(j);
 	Room* k = new Room(textureMap, 12.0f, 6.0f, ROOM_HEIGHT, 34.0f, -30.0f);
-	manager.addMesh(k);
 	rooms.push_back(k);*/
 
 	for (int i = 0; i < density; i++) {
@@ -55,10 +48,7 @@ RoomGen::RoomGen(std::unordered_map<std::string, Texture>* textureMap, std::vect
 		int y = rand() % fillAreaHeight - fillAreaHeight/2.0f;
 
 		//init new room
-		Room* newRoom = new Room(textureMap, length, width, ROOM_HEIGHT, x, y);
-		Light light = LIGHT_DISTANCE_41;
-		light.position = glm::vec3(x, ROOM_HEIGHT* 1.3f, y);
-		lights->push_back(light);
+		Room* newRoom = new Room(length, width, ROOM_HEIGHT, x, y);
 
 		//check if intersects with any other
 		bool failed = false;
@@ -72,16 +62,34 @@ RoomGen::RoomGen(std::unordered_map<std::string, Texture>* textureMap, std::vect
 
 		if (!failed) {
 			//add the new room
-			manager.addMesh(newRoom);
+			//manager.addMesh(newRoom);
 			rooms.push_back(newRoom);
 		}
 	}
 
 	addHallways();
+	// TODO: delete unused rooms (pointer)
+	//find the biggest network our algorithm was able to make.
+	rooms = findBiggestNetwork();
+	std::vector<Connection> newConnections;
+	for (Connection conn : connections) {
+		for (Room* r : rooms) {
+			if (conn.first == r || conn.second == r) {
+				newConnections.push_back(conn);
+				manager.addMesh(conn.hallway);
+			}
+		}
+	}
+	connections = newConnections;
+
 	for (Room* r : rooms) {
+		for(Light light : r->getLights())
+			lights->push_back(light);
+		manager.addMesh(r);
 		r->addArtPieces();
 	}
-	
+
+
 	//generate vertices
 	manager.computeMergedMesh();
 	Mesh computedMesh = manager.finalMesh;
@@ -115,7 +123,6 @@ void RoomGen::addHallways() {
 		//connect them
 		if (!areConnected(room, closest)) {
 			connect(room, closest);
-			connections.push_back(std::pair<Room*,Room*>(room, closest));
 		}
 
 		removeFromVector(roomsToConnect, room);
@@ -233,12 +240,12 @@ void RoomGen::connectHorizontally(Room* from, Room* to) {
 	float tunnelToTo = tunnelCenterTo + tunnelWidth / 2.0f;
 	to->setBackOpening(tunnelToFrom, tunnelToTo);
 
-	Hallway* hallway = new Hallway(textureMap, tunnelLength, tunnelWidth, tunnelHeight, true, false, false);
+	Hallway* hallway = new Hallway(Hallway::HallwayDirection::HORIZONTAL, tunnelLength, tunnelWidth, tunnelHeight, true, false, false);
 	float hallwayX = from->getBottomRight().x + tunnelLength / 2.0f;
 	hallway->translateMesh(glm::vec3(tunnelCenterWorld, 0.0f, hallwayX));
 
 	std::cout << "canHorizontal" << std::endl;
-	manager.addMesh(hallway);
+	connections.push_back(Connection{ from, to, hallway });
 }
 
 bool RoomGen::canConnectVertically(Room from, Room to) {
@@ -317,13 +324,12 @@ void RoomGen::connectVertically(Room* from, Room* to) {
 	float tunnelToTo = tunnelCenterTo + tunnelWidth / 2.0f;
 	to->setRightOpening(tunnelToFrom, tunnelToTo);
 
-	Hallway* hallway = new Hallway(textureMap, tunnelLength, tunnelWidth, tunnelHeight, true, false, false);
+	Hallway* hallway = new Hallway(Hallway::HallwayDirection::VERTICAL, tunnelLength, tunnelWidth, tunnelHeight, true, false, false);
 	float hallwayY = from->getTopLeft().y + tunnelLength / 2.0f;
-	hallway->localRotateMesh(glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	hallway->translateMesh(glm::vec3(hallwayY, 0.0f, tunnelCenterWorld));
 
 	std::cout << "canVertical" << std::endl;
-	manager.addMesh(hallway);
+	connections.push_back(Connection{ from, to, hallway });
 }
 
 void RoomGen::connectIndirectly(Room* from, Room* to) {
@@ -371,13 +377,13 @@ void RoomGen::connectIndirectlyHorizontalFirst(Room* from, Room* to) {
 	else
 		to->setLeftOpening(tunnelToFrom, tunnelToTo);
 
-	Hallway* hallwayH = new Hallway(textureMap, hTunnelLength, tunnelWidth, tunnelHeight, false, toIsHigher, !toIsHigher);
-	hallwayH->attach(Hallway(textureMap, vTunnelLength, tunnelWidth, tunnelHeight, true, false, false));
+	Hallway* hallwayH = new Hallway(Hallway::HallwayDirection::HORIZONTAL, hTunnelLength, tunnelWidth, tunnelHeight, false, toIsHigher, !toIsHigher);
+	hallwayH->attach(new Hallway(Hallway::HallwayDirection::VERTICAL, vTunnelLength, tunnelWidth, tunnelHeight, true, false, false));
 	float hallwayX = from->getBottomRight().x + hTunnelLength / 2.0f;
 	hallwayH->translateMesh(glm::vec3(hTunnelCenterWorld, 0.0f, hallwayX));
 
 	std::cout << "indirect Horizontal first" << std::endl;
-	manager.addMesh(hallwayH);
+	connections.push_back(Connection{ from, to, hallwayH });
 }
 
 void RoomGen::connectIndirectlyVerticalFirst(Room* from, Room* to) {
@@ -407,15 +413,13 @@ void RoomGen::connectIndirectlyVerticalFirst(Room* from, Room* to) {
 	float tunnelToTo = tunnelCenterTo + tunnelWidth / 2.0f;
 	to->setBackOpening(tunnelToFrom, tunnelToTo);
 
-	Hallway* hallwayH = new Hallway(textureMap, vTunnelLength, tunnelWidth, tunnelHeight, false, !toIsHigher, toIsHigher);
-	hallwayH->attach(Hallway(textureMap, hTunnelLength, tunnelWidth, tunnelHeight, true, false, false));
+	Hallway* hallwayH = new Hallway(Hallway::HallwayDirection::VERTICAL, vTunnelLength, tunnelWidth, tunnelHeight, false, !toIsHigher, toIsHigher);
+	hallwayH->attach(new Hallway(Hallway::HallwayDirection::HORIZONTAL, hTunnelLength, tunnelWidth, tunnelHeight, true, false, false));
 	float hallwayY = toIsHigher ? from->getTopLeft().y + vTunnelLength / 2.0f : from->getBottomRight().y - vTunnelLength / 2.0f;
-	hallwayH->localRotateMesh(glm::radians(toIsHigher ? 90.0f : 270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	hallwayH->translateMesh(glm::vec3(hallwayY, 0.0f, vTunnelCenterWorld));
 
-
 	std::cout << "indirect Vertical first" << std::endl;
-	manager.addMesh(hallwayH);
+	connections.push_back(Connection{ from, to, hallwayH });
 }
 
 void RoomGen::removeFromVector(std::vector<Room*>& rooms, Room* room) {
@@ -428,7 +432,7 @@ void RoomGen::removeFromVector(std::vector<Room*>& rooms, Room* room) {
 }
 
 bool RoomGen::areConnected(Room* r1, Room* r2) {
-	for (std::pair<Room*, Room*> connection : connections) {
+	for (Connection connection : connections) {
 		if ((connection.first == r1 && connection.second == r2) || (connection.first == r2 && connection.second == r1)) {
 			return true;
 		}
@@ -439,6 +443,82 @@ bool RoomGen::areConnected(Room* r1, Room* r2) {
 glm::vec3 RoomGen::getRandomRoomPosition()
 {
 	int i = rand() % rooms.size();
+	Room* room = rooms.at(i);
 	glm::vec2 pos = rooms.at(i)->getPosition();
-	return glm::vec3(pos.y, 0.0f, pos.x);
+	return glm::vec3(pos.y - room->getWidth()/4.0f, 0.0f, pos.x - room->getLength()/4.0f);
+}
+
+//BFS http://www.geeksforgeeks.org/breadth-first-traversal-for-a-graph/
+std::vector<Room*> RoomGen::findBiggestNetwork() {
+	std::vector<Room*> roomsToCheck;
+	for (Room* r : rooms) {
+		roomsToCheck.push_back(r);
+	}
+
+	std::list<Room*> largest;
+	while (!roomsToCheck.empty()) {
+		Room* room = roomsToCheck.at(0);
+
+		std::list<Room*> visited;
+		std::list<Room*> queue;
+
+		visited.push_back(room);
+		queue.push_back(room);
+
+		while (!queue.empty()) {
+			Room* s = queue.front();
+			queue.pop_front();
+
+			//get all adjacent rooms
+			std::vector<Room*> adjs = getAdjacentRooms(s);
+			for (Room* adj : adjs) {
+				//if !visited
+				if (std::find(visited.begin(), visited.end(), adj) == visited.end()) {
+					visited.push_back(adj);
+					queue.push_back(adj);
+				}
+			}
+		}
+
+		for (Room* vis : visited) {
+			removeFromVector(roomsToCheck, vis);
+		}
+
+		if (visited.size() > largest.size()) {
+			largest = visited;
+		}
+	}
+
+	std::vector<Room*> v{ std::make_move_iterator(std::begin(largest)),
+		std::make_move_iterator(std::end(largest)) };
+	
+	return v;
+}
+
+std::vector<Room*> RoomGen::getAdjacentRooms(Room* room) {
+	std::vector<Room*> adj;
+	for (Connection connection : connections) {
+		if (connection.first == room || connection.second == room) {
+			adj.push_back(connection.first == room ? connection.second : connection.first);
+		}
+	}
+	return adj;
+}
+
+std::vector<BoundingBox> RoomGen::getBoundingBox() {
+	std::vector<BoundingBox> boxes;
+
+	//room boxes
+	for (Room* room : rooms) {
+		for (BoundingBox box : room->getBoundingBox()) {
+			boxes.push_back(box);
+		}
+	}
+
+	//hallway boxes
+	for (Connection c : connections)
+		for (BoundingBox box : c.hallway->getBoundingBox())
+			boxes.push_back(box);
+
+	return boxes;
 }

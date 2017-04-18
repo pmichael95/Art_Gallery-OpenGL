@@ -264,3 +264,52 @@ void Cube::setFaceMix(CubeFace face, Material material, Texture texture, float r
 	meshFace->mix(material, texture, repeatX, repeatY, mix);
 	onChange();
 }
+
+std::vector<BoundingBox> Cube::getBoundingBox() {
+	float extraSpace = 0.135f;
+	std::vector<BoundingBox> boxes;
+
+	if (!left->getVertices().empty()) {
+		BoundingBox l;
+		l.max = glm::vec3(this->maxXYZ.x + extraSpace, this->maxXYZ.y + extraSpace, this->maxXYZ.z + extraSpace);
+		l.min = glm::vec3(this->maxXYZ.x - extraSpace, this->minXYZ.y - extraSpace, this->minXYZ.z - extraSpace);
+		boxes.push_back(l);
+	}
+
+	if (!right->getVertices().empty()) {
+		BoundingBox r;
+		r.max = glm::vec3(this->minXYZ.x + extraSpace, this->maxXYZ.y + extraSpace, this->maxXYZ.z + extraSpace);
+		r.min = glm::vec3(this->minXYZ.x - extraSpace, this->minXYZ.y - extraSpace, this->minXYZ.z - extraSpace);
+		boxes.push_back(r);
+	}
+
+	if (!front->getVertices().empty()) {
+		BoundingBox f;
+		f.max = glm::vec3(this->maxXYZ.x + extraSpace, this->maxXYZ.y + extraSpace, this->maxXYZ.z + extraSpace);
+		f.min = glm::vec3(this->minXYZ.x - extraSpace, this->minXYZ.y - extraSpace, this->maxXYZ.z - extraSpace);
+		boxes.push_back(f);
+	}
+
+	if (!back->getVertices().empty()) {
+		BoundingBox b;
+		b.max = glm::vec3(this->maxXYZ.x + extraSpace, this->maxXYZ.y + extraSpace, this->minXYZ.z + extraSpace);
+		b.min = glm::vec3(this->minXYZ.x - extraSpace, this->minXYZ.y - extraSpace, this->minXYZ.z - extraSpace);
+		boxes.push_back(b);
+	}
+
+	if (!top->getVertices().empty()) {
+		BoundingBox t;
+		t.max = glm::vec3(this->maxXYZ.x + extraSpace, this->maxXYZ.y + extraSpace, this->maxXYZ.z + extraSpace);
+		t.min = glm::vec3(this->minXYZ.x - extraSpace, this->maxXYZ.y - extraSpace, this->minXYZ.z - extraSpace);
+		boxes.push_back(t);
+	}
+
+	if (!bottom->getVertices().empty()) {
+		BoundingBox bot;
+		bot.max = glm::vec3(this->maxXYZ.x + extraSpace, this->minXYZ.y + extraSpace, this->maxXYZ.z + extraSpace);
+		bot.min = glm::vec3(this->minXYZ.x - extraSpace, this->minXYZ.y - extraSpace, this->minXYZ.z - extraSpace);
+		boxes.push_back(bot);
+	}
+
+	return boxes;
+};

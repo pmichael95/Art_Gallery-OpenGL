@@ -3,19 +3,26 @@
 #include "Hallway.h"
 #include "Texture.h"
 #include "Light.h"
-#include <unordered_map>
 
 class RoomGen : public Mesh {
 public:
-	RoomGen(std::unordered_map<std::string, Texture>* textureMap, std::vector<Light>* lights);
+	RoomGen(std::vector<Light>* lights);
 	~RoomGen();
 
 	glm::vec3 getRandomRoomPosition();
+	std::vector<BoundingBox> getBoundingBox();
+	static const float ROOM_HEIGHT;
 private:
+	struct Connection {
+		Room* first;
+		Room* second;
+		Hallway* hallway;
+	};
+
 	MeshManager manager;
 
 	std::vector<Room*> rooms; //store generated rooms
-	std::vector<std::pair<Room*, Room*>> connections; //store connections between rooms
+	std::vector<Connection> connections; //store connections between rooms
 	
 	void addHallways();
 	Room* getClosestRoom(Room);
@@ -34,9 +41,9 @@ private:
 
 	void removeFromVector(std::vector<Room*>&, Room*);
 
-	float ROOM_HEIGHT = 2.5f;
 	float MIN_TUNNEL_WIDTH = 1.5f;	//minimum width for a hallway
 
-	std::unordered_map<std::string, Texture>* textureMap;
+	std::vector<Room*> findBiggestNetwork();
+	std::vector<Room*> getAdjacentRooms(Room*);
 };
 

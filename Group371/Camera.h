@@ -6,7 +6,11 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/glm.hpp>
-
+#include "Mesh.h"
+#include "RoomGen.h"
+#include <vector>
+#include <Windows.h>
+#include <mmsystem.h>
 
 // Camera parameters for a perspective camera
 struct PerspectiveCameraParams {
@@ -26,6 +30,8 @@ public:
 	static const float CAMERA_SPEED;
 	// The camera's rotation speed when moving around the mouse
 	static const float LOOK_AROUND_SPEED;
+	// The camera's fixed height of the player
+	static const float HEIGHT;
 
 	glm::mat4 getProjectionMatrix();
 	glm::mat4 getViewMatrix();
@@ -33,24 +39,29 @@ public:
 	// Set the camera's current position in the world
 	void setPosition(glm::vec3 position);
 	// Move toward the camera's view direction
-	void moveForward();
+	void moveForward(bool checkCollision);
 	// Move away the camera's view direction
-	void moveBackward();
+	void moveBackward(bool checkCollision);
 	// Move toward the camera's strafe direction. Strafe left from the view direction
-	void moveLeft();
+	void moveLeft(bool checkCollision);
 	// Move away the camera's strafe direction. Strafe right from the view direction
-	void moveRight();
+	void moveRight(bool checkCollision);
 	// Move toward the camera's up direction. Flys up.
-	void moveUp();
+	void moveUp(bool checkCollision);
 	// Move away from the camera's up direction. Flys down.
-	void moveDown();
+	void moveDown(bool checkCollision);
 	// Update camera's positions of the the mouse's current position on the screen
 	void updateMouse(glm::vec2&);
 	// The current position of where the camera is placed in this world
 	const glm::vec3& getCameraPosition() const;
+	// Plays footstep noise
+	void playFootSteps(bool checkCollision);
 
+	std::vector<BoundingBox> collision_boxes;
 private:
 	void init(PerspectiveCameraParams params);
+
+	glm::vec3 checkCollisions(glm::vec3 direction);
 	// The current params for our camera
 	PerspectiveCameraParams cameraParams;
 	// The old positions of the mouse cursor
