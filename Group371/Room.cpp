@@ -238,15 +238,38 @@ void Room::setBackOpening(float from, float to) {
 }
 
 void Room::setColors(Cube& cube) {
-	int mix = 80;
+	int mix = 50;
 	float repeat = 2;
-	Material m = MATERIAL_EMERALD;
-	Material m2 = MATERIAL_GOLD;
 
-	cube.setFaceTexture(CubeFace::front, Texture::getTexture("wall"), repeat, repeat);
-	cube.setFaceTexture(CubeFace::back, Texture::getTexture("wall"), repeat, repeat);
-	cube.setFaceMix(CubeFace::left, m, Texture::getTexture("wall"), repeat, repeat, mix);
-	cube.setFaceMix(CubeFace::right, m2, Texture::getTexture("brick"), repeat, repeat, mix);
+	if (rand() % 2 == 0) {
+		Material m = randomMaterial();
+		cube.setFaceMix(CubeFace::front, m, Texture::getTexture("wall"), repeat, repeat, mix);
+	}
+	else {
+		cube.setFaceTexture(CubeFace::front, Texture::getTexture("wall"), repeat, repeat);
+	}
+	if (rand() % 2 == 0) {
+		Material m = randomMaterial();
+		cube.setFaceMix(CubeFace::back, m, Texture::getTexture("wall"), repeat, repeat, mix);
+	}
+	else {
+		cube.setFaceTexture(CubeFace::back, Texture::getTexture("wall"), repeat, repeat);
+	}
+	if (rand() % 2 == 0) {
+		Material m = randomMaterial();
+		cube.setFaceMix(CubeFace::left, m, Texture::getTexture("wall"), repeat, repeat, mix);
+	}
+	else {
+		cube.setFaceTexture(CubeFace::left, Texture::getTexture("wall"), repeat, repeat);
+	}
+	if (rand() % 2 == 0) {
+		Material m = randomMaterial();
+		cube.setFaceMix(CubeFace::right, m, Texture::getTexture("wall"), repeat, repeat, mix);
+	}
+	else {
+		cube.setFaceTexture(CubeFace::right, Texture::getTexture("wall"), repeat, repeat);
+	}
+
 	cube.setFaceTexture(CubeFace::bottom, Texture::getTexture("floor"), 8, 16);
 	cube.setFaceTexture(CubeFace::top, Texture::getTexture("wall"));
 }
@@ -274,42 +297,29 @@ glm::vec2 Room::getBottomRight() {
 
 std::vector<Light> Room::getLights() {
 	std::vector<Light> lights;
+	float lightheight = 0;
+	glm::vec3 topLeft(position.y + width / 4.0f, lightheight, position.x - length / 4.0f);
+	glm::vec3 topRight(position.y + width / 4.0f, lightheight, position.x + length / 4.0f);
 
-	Light light = LIGHT_DISTANCE_13;
-	light.position = glm::vec3(position.y + width/4.0f, 0, position.x + length/4.0f);
-	lights.push_back(light);
+	glm::vec3 bottomLeft(position.y - width / 4.0f, lightheight, position.x - length / 4.0f);
+	glm::vec3 bottomRight(position.y - width / 4.0f, lightheight, position.x + length / 4.0f);
 
-	Light light2 = LIGHT_DISTANCE_13;
-	light2.position = glm::vec3(position.y + width / 4.0f, 0, position.x - length / 4.0f);
-	lights.push_back(light2);
+	glm::vec3 middleLeft(position.y, lightheight, position.x - length / 4.0f);
+	glm::vec3 middleRight(position.y, lightheight, position.x + length / 4.0f);
+	glm::vec3 middleTop(position.y + width / 4.0f, lightheight, position.x);
+	glm::vec3 middleBottom(position.y - width / 4.0f, lightheight, position.x);
+	
+	Light low = LIGHT_DISTANCE_20;
+	Light high = LIGHT_DISTANCE_32;
 
-	Light light3 = LIGHT_DISTANCE_13;
-	light3.position = glm::vec3(position.y - width / 4.0f, 0, position.x + length / 4.0f);
-	lights.push_back(light3);
-
-	Light light4 = LIGHT_DISTANCE_13;
-	light4.position = glm::vec3(position.y - width / 4.0f, 0, position.x - length / 4.0f);
-	lights.push_back(light4);
-
-	Light light5 = LIGHT_DISTANCE_13;
-	light5.position = glm::vec3(position.y, 0, position.x);
-	lights.push_back(light5);
-
-	Light light6 = LIGHT_DISTANCE_13;
-	light6.position = glm::vec3(position.y + width/2.0f, 0, position.x);
-	lights.push_back(light6);
-
-	Light light7 = LIGHT_DISTANCE_13;
-	light7.position = glm::vec3(position.y - width / 2.0f, 0, position.x);
-	lights.push_back(light7);
-
-	Light light8 = LIGHT_DISTANCE_13;
-	light8.position = glm::vec3(position.y, 0, position.x + length / 2.0f);
-	lights.push_back(light8);
-
-	Light light9 = LIGHT_DISTANCE_13;
-	light9.position = glm::vec3(position.y, 0, position.x - length / 2.0f);
-	lights.push_back(light9);
+	Light light1 = width > 10.0f && length > 10.0f ? high : low;
+	light1.position = middleTop;
+	lights.push_back(light1);
+	if (width > 10.0f || length > 10.0f) {
+		Light light2 = high;
+		light2.position = middleBottom;
+		lights.push_back(light2);
+	}
 
 	return lights;
 }

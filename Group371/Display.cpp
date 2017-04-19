@@ -3,16 +3,13 @@
 #include "Painting.h"
 
 
-Display::Display(std::string title, int width, int height, bool enableDebugging) {
-	debugModeEnabled = enableDebugging;
+Display::Display(std::string title, int width, int height) {
 	initGL(title, width, height);
 	initGLBuffers();
 	initTextures();
 	initSharedData();
 	initCamera();
-	if (debugModeEnabled){
-		initDebugMeshes();
-	}
+	initDebugMeshes();
 
 	std::vector<BoundingBox> boxes;
 
@@ -35,11 +32,9 @@ Display::~Display() {
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
-	if (debugModeEnabled) {
-		glDeleteBuffers(1, &DEBUG_VBO);
-		glDeleteBuffers(1, &DEBUG_EBO);
-		delete debugShader;
-	}
+	glDeleteBuffers(1, &DEBUG_VBO);
+	glDeleteBuffers(1, &DEBUG_EBO);
+	delete debugShader;
 	
 	glfwTerminate();
 }
@@ -58,9 +53,8 @@ void Display::update() {
 
 	glBindVertexArray(VAO);
 	
-	if (debugModeEnabled) {
+	if(sharedData.camera->debugModeEnabled)
 		debugUpdate();
-	}
 
 
 	// Pass our uniform data
@@ -242,7 +236,7 @@ void Display::initTextures() {
 	texture2.minFilter = GL_NEAREST;
 
 
-	std::string t3 = "brickwall2";
+	std::string t3 = "copper";
 	Texture texture3("textures/" + t3 + "/", t3, "jpg");
 	texture3.uvWrap = glm::ivec2(GL_REPEAT, GL_REPEAT);
 	texture3.maxFilter = GL_NEAREST;
@@ -257,7 +251,7 @@ void Display::initTextures() {
 
 	Texture::textures.push_back(std::pair<std::string, Texture>("floor", texture1));
 	Texture::textures.push_back(std::pair<std::string, Texture>("wall", texture2));
-	Texture::textures.push_back(std::pair<std::string, Texture>("brick", texture3));
+	Texture::textures.push_back(std::pair<std::string, Texture>("copper", texture3));
 	Texture::textures.push_back(std::pair<std::string, Texture>("pedestal", texture4));
 
 	for (std::pair<std::string, Texture>& texture : Texture::textures) {
@@ -315,16 +309,14 @@ void Display::initGLBuffers() {
 	// bind element buffer object to buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-	if (debugModeEnabled) {
-		// Generate element buffer object
-		glGenBuffers(1, &DEBUG_EBO);
-		// Generate vertex buffer object
-		glGenBuffers(1, &DEBUG_VBO);
-		// bind vertex buffer object to buffer
-		glBindBuffer(GL_ARRAY_BUFFER, DEBUG_VBO);
-		// bind element buffer object to buffer
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, DEBUG_EBO);
-	}
+	// Generate element buffer object
+	glGenBuffers(1, &DEBUG_EBO);
+	// Generate vertex buffer object
+	glGenBuffers(1, &DEBUG_VBO);
+	// bind vertex buffer object to buffer
+	glBindBuffer(GL_ARRAY_BUFFER, DEBUG_VBO);
+	// bind element buffer object to buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, DEBUG_EBO);
 
 	// Position attribute
 	GLuint byteOffset = 0;

@@ -27,6 +27,7 @@ void GLFWCallback::key_callback(GLFWwindow* window, int key, int scancode, int a
 	if (action == GLFW_RELEASE) {
 		switch (key) {
 		case GLFW_KEY_LEFT_CONTROL: { ctrlPressed = false; break; }
+		case GLFW_KEY_B: { sharedData->camera->debugModeEnabled = !sharedData->camera->debugModeEnabled; break; }
 		}
 	}
 
@@ -51,13 +52,9 @@ void GLFWCallback::cursor_pos_callback(GLFWwindow* window, double xpos, double y
 	sharedData->camera->updateMouse(glm::vec2(xpos, ypos));
 };
 
-void GLFWCallback::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-	std::cout << "mbtn " << std::endl;
-};
+void GLFWCallback::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {};
 
-void GLFWCallback::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-	std::cout << "scr " << std::endl;
-};
+void GLFWCallback::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {};
 
 void GLFWCallback::window_resize_callback(GLFWwindow* window, int width, int height) {
 	// Update the viewport to the new width and height

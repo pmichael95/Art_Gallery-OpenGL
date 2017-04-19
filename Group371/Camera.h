@@ -32,6 +32,8 @@ public:
 	static const float LOOK_AROUND_SPEED;
 	// The camera's fixed height of the player
 	static const float HEIGHT;
+	// The camera's speed boost when in no-clip mode.
+	static const float SPEED_BOOST;
 
 	glm::mat4 getProjectionMatrix();
 	glm::mat4 getViewMatrix();
@@ -56,8 +58,12 @@ public:
 	const glm::vec3& getCameraPosition() const;
 	// Plays footstep noise
 	void playFootSteps(bool checkCollision);
-
+	
+	//collision boxes to check for collision detection
 	std::vector<BoundingBox> collision_boxes;
+	//show debug grid
+	bool debugModeEnabled = false;
+
 private:
 	void init(PerspectiveCameraParams params);
 

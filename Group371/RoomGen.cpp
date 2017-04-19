@@ -151,7 +151,7 @@ float RoomGen::getDistanceBetween(Room r1, Room r2) {
 }
 
 void RoomGen::connect(Room* from, Room* to) {
-	std::cout << "Connect (" << from->getPosition().x << ", " << from->getPosition().y << ") to (" << to->getPosition().x << ", " << to->getPosition().y << ")" << std::endl;
+	//std::cout << "Connect (" << from->getPosition().x << ", " << from->getPosition().y << ") to (" << to->getPosition().x << ", " << to->getPosition().y << ")" << std::endl;
 
 	if (canConnectHorizontally(*from, *to)) {
 		connectHorizontally(from, to);
@@ -244,7 +244,6 @@ void RoomGen::connectHorizontally(Room* from, Room* to) {
 	float hallwayX = from->getBottomRight().x + tunnelLength / 2.0f;
 	hallway->translateMesh(glm::vec3(tunnelCenterWorld, 0.0f, hallwayX));
 
-	std::cout << "canHorizontal" << std::endl;
 	connections.push_back(Connection{ from, to, hallway });
 }
 
@@ -328,7 +327,6 @@ void RoomGen::connectVertically(Room* from, Room* to) {
 	float hallwayY = from->getTopLeft().y + tunnelLength / 2.0f;
 	hallway->translateMesh(glm::vec3(hallwayY, 0.0f, tunnelCenterWorld));
 
-	std::cout << "canVertical" << std::endl;
 	connections.push_back(Connection{ from, to, hallway });
 }
 
@@ -382,7 +380,6 @@ void RoomGen::connectIndirectlyHorizontalFirst(Room* from, Room* to) {
 	float hallwayX = from->getBottomRight().x + hTunnelLength / 2.0f;
 	hallwayH->translateMesh(glm::vec3(hTunnelCenterWorld, 0.0f, hallwayX));
 
-	std::cout << "indirect Horizontal first" << std::endl;
 	connections.push_back(Connection{ from, to, hallwayH });
 }
 
@@ -418,7 +415,6 @@ void RoomGen::connectIndirectlyVerticalFirst(Room* from, Room* to) {
 	float hallwayY = toIsHigher ? from->getTopLeft().y + vTunnelLength / 2.0f : from->getBottomRight().y - vTunnelLength / 2.0f;
 	hallwayH->translateMesh(glm::vec3(hallwayY, 0.0f, vTunnelCenterWorld));
 
-	std::cout << "indirect Vertical first" << std::endl;
 	connections.push_back(Connection{ from, to, hallwayH });
 }
 

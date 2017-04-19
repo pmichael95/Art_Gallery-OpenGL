@@ -62,7 +62,6 @@ std::vector<BoundingBox> Bench::getBoundingBox()
 
 void Bench::onChange()
 {
-	std::cout << "onchange" << std::endl;
 	//recompute mesh on changes
 	manager.computeMergedMeshCopies();
 	Mesh computedMesh = manager.finalMesh;

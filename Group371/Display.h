@@ -34,7 +34,7 @@
 class Display {
 public:
 	//create and setup glfw window
-	Display(std::string title, int width = 800, int height = 800, bool enableDebugging = false);
+	Display(std::string title, int width = 800, int height = 800);
 	~Display();
 
 	//update (swap buffer/pollevents)
@@ -97,7 +97,7 @@ private:
 
 	// DEBUG stuff
 	// Whether debug mode is enabled
-	bool debugModeEnabled = false;
+	//bool debugModeEnabled = false;
 	// The grid and axes meshes
 	DebugMeshManager debugMeshManager;
 

@@ -26,6 +26,8 @@ public:
 	void addIndices(glm::ivec3 tri);
 	void addVertices(const std::vector<Vertex> vertices);
 	void addIndices(const std::vector<int> indices);
+	void setVertices(const std::vector<Vertex> vertices);
+	void setIndices(const std::vector<int> indices);
 	// TODO: deprecate this and move to setMaterial
 	void setColor(glm::vec4);
 	void setMaterial(const Material& material);
@@ -59,6 +61,7 @@ public:
 	glm::vec4 maxXYZ;
 	glm::vec4 minXYZ;
 protected:
+	void addIndiceGroup(glm::ivec3 tri);
 	void calculateTangentsAndBitTangents(glm::ivec3 tri);
 	void updateVerticesFromTransform();
 	void recalculateCenter();

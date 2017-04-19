@@ -34,20 +34,7 @@ void Mesh::addIndices(glm::ivec3 tri) {
 	indices.push_back(tri.x);
 	indices.push_back(tri.y);
 	indices.push_back(tri.z);
-	indiceGroups.push_back(tri);
-
-	Vertex& v1 = vertices.at(tri.x);
-	Vertex& v2 = vertices.at(tri.y);
-	Vertex& v3 = vertices.at(tri.z);
-
-	glm::vec3 d1 = v1.position - v2.position;
-	glm::vec3 d2 = v1.position - v3.position;
-	glm::vec3 normal = glm::normalize(glm::cross(d1, d2));
-	v1.normal = normal;
-	v2.normal = normal;
-	v3.normal = normal;
-
-	calculateTangentsAndBitTangents(tri);
+	addIndiceGroup(tri);
 }
 
 void Mesh::addVertices(const std::vector<Vertex> vertices) {
@@ -59,6 +46,19 @@ void Mesh::addVertices(const std::vector<Vertex> vertices) {
 void Mesh::addIndices(const std::vector<int> indices) {
 	for (int i = 0; i < indices.size(); i += 3) {
 		addIndices(glm::vec3(indices.at(i), indices.at(i + 1), indices.at(i + 2)));
+	}
+}
+
+void Mesh::setVertices(const std::vector<Vertex> vertices) {
+	this->vertices.clear();
+	addVertices(vertices);
+}
+
+void Mesh::setIndices(const std::vector<int> indices) {
+	this->indices = indices;
+	indiceGroups.clear();
+	for (int i = 0; i < indices.size(); i += 3) {
+		addIndiceGroup(glm::ivec3(indices.at(i), indices.at(i+1), indices.at(i+2)));
 	}
 }
 
@@ -212,6 +212,23 @@ bool Mesh::operator==(const Mesh& other) const {
 
 bool Mesh::operator!=(const Mesh& other) const {
 	return !(*this == other);
+}
+
+void Mesh::addIndiceGroup(glm::ivec3 tri) {
+	indiceGroups.push_back(tri);
+
+	Vertex& v1 = vertices.at(tri.x);
+	Vertex& v2 = vertices.at(tri.y);
+	Vertex& v3 = vertices.at(tri.z);
+
+	glm::vec3 d1 = v1.position - v2.position;
+	glm::vec3 d2 = v1.position - v3.position;
+	glm::vec3 normal = glm::normalize(glm::cross(d1, d2));
+	v1.normal = normal;
+	v2.normal = normal;
+	v3.normal = normal;
+
+	calculateTangentsAndBitTangents(tri);
 }
 
 void Mesh::calculateTangentsAndBitTangents(glm::ivec3 tri) {

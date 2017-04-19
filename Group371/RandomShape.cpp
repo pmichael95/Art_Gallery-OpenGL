@@ -25,8 +25,8 @@ RandomShape::RandomShape()
 		verts.push_back(Vertex(glm::vec3(v.position.x + xCenter, v.position.y + yCenter, v.position.z + zCenter)));
 	}
 
-	vertices = verts;
-	indices = m.getIndices();
+	setVertices(verts);
+	setIndices(m.getIndices());
 	Material material = randomMaterial();
 	setMaterial(material);
 }

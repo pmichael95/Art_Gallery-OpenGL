@@ -3,7 +3,8 @@
 // TODO: fiddle around with these values until it feels nice
 const float Camera::CAMERA_SPEED = 0.15f;
 const float Camera::LOOK_AROUND_SPEED = 0.0025f;
-const float Camera::HEIGHT = -RoomGen::ROOM_HEIGHT/2.0f + 0.8225f;
+const float Camera::HEIGHT = -RoomGen::ROOM_HEIGHT / 2.0f + 0.8225f;
+const float Camera::SPEED_BOOST = 3.5f;
 
 Camera::Camera() {
 	PerspectiveCameraParams defaultParams;
@@ -46,7 +47,7 @@ void Camera::moveForward(bool checkCollision) {
 	playFootSteps(checkCollision);
 	
 	glm::vec3 dir = CAMERA_SPEED * glm::vec3(viewDirection.x, !checkCollision ? viewDirection.y : 0, viewDirection.z);
-	position += checkCollision ? checkCollisions(dir) : dir;
+	position += checkCollision ? checkCollisions(dir) : dir*SPEED_BOOST;
 	if (checkCollision) {
 		position.y = HEIGHT;
 	}
@@ -55,7 +56,7 @@ void Camera::moveForward(bool checkCollision) {
 void Camera::moveBackward(bool checkCollision) {
 	playFootSteps(checkCollision);
 	glm::vec3 dir = CAMERA_SPEED * -glm::vec3(viewDirection.x, !checkCollision ? viewDirection.y : 0, viewDirection.z);
-	position += checkCollision ? checkCollisions(dir) : dir;
+	position += checkCollision ? checkCollisions(dir) : dir*SPEED_BOOST;
 	if (checkCollision) {
 		position.y = HEIGHT;
 	}
@@ -64,22 +65,22 @@ void Camera::moveBackward(bool checkCollision) {
 void Camera::moveLeft(bool checkCollision) {
 	playFootSteps(checkCollision);
 	glm::vec3 dir = CAMERA_SPEED * -strafeDirection;
-	position += checkCollision ? checkCollisions(dir) : dir;
+	position += checkCollision ? checkCollisions(dir) : dir*SPEED_BOOST;
 }
 
 void Camera::moveRight(bool checkCollision) {
 	playFootSteps(checkCollision);
 	glm::vec3 dir = CAMERA_SPEED * strafeDirection;
-	position += checkCollision ? checkCollisions(dir) : dir;
+	position += checkCollision ? checkCollisions(dir) : dir*SPEED_BOOST;
 }
 void Camera::moveUp(bool checkCollision) {
 	glm::vec3 dir = CAMERA_SPEED * upDirection;
-	position += checkCollision ? checkCollisions(dir) : dir;
+	position += checkCollision ? checkCollisions(dir) : dir*SPEED_BOOST;
 }
 
 void Camera::moveDown(bool checkCollision) {
 	glm::vec3 dir = CAMERA_SPEED * -upDirection;
-	position += checkCollision ? checkCollisions(dir) : dir;
+	position += checkCollision ? checkCollisions(dir) : dir*SPEED_BOOST;
 }
 
 void Camera::updateMouse(glm::vec2& newPos) {

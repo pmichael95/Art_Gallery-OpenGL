@@ -21,8 +21,6 @@ public:
 	float getHeight() { return height; };
 	float getWidth() { return width; };
 
-	virtual std::vector<BoundingBox> getBoundingBox();
-
 	static const float FRAME_LENGTH;
 private:
 	void onChange();

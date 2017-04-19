@@ -7,7 +7,7 @@ int main() {
 	srand(time(0));
 
 	//Title Display
-	Display display("Art Gallery", 800, 800, true);
+	Display display("Art Gallery", 1280, 720);
 
 	// Set the shader for this diplay
 	Shader shader("shader.vert", "shader.frag");

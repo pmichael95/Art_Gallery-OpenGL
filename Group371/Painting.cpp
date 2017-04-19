@@ -16,12 +16,11 @@ Painting::~Painting() {
 }
 
 void Painting::onChange() {
-	std::cout << "onchange" << std::endl;
 	//recompute mesh on changes
 	manager.computeMergedMeshCopies();
 	Mesh computedMesh = manager.finalMesh;
-	vertices = computedMesh.getVertices();
-	indices = computedMesh.getIndices();
+	setVertices(computedMesh.getVertices());
+	setIndices(computedMesh.getIndices());
 }
 
 void Painting::addFrame() {
@@ -29,26 +28,26 @@ void Painting::addFrame() {
 		Mesh rightFrame = Cube();
 		rightFrame.localScaleMesh(glm::vec3(FRAME_LENGTH, height - FRAME_LENGTH*2, width));
 		rightFrame.translateMesh(glm::vec3(length/2.0f - FRAME_LENGTH / 2.0f, 0.0f, 0.0f));
-		Texture t = Texture::getTexture("floor");
+		Texture t = Texture::getTexture("copper");
 		rightFrame.setTexture(t, repeat, repeat);
 		manager.addMesh(rightFrame);
 
 		Mesh leftFrame = Cube();
 		leftFrame.localScaleMesh(glm::vec3(FRAME_LENGTH, height - FRAME_LENGTH*2, width));
 		leftFrame.translateMesh(glm::vec3(-length / 2.0f + FRAME_LENGTH / 2.0f, 0.0f, 0.0f));
-		leftFrame.setTexture(Texture::getTexture("floor"), repeat, repeat);
+		leftFrame.setTexture(Texture::getTexture("copper"), repeat, repeat);
 		manager.addMesh(leftFrame);
 
 		Mesh topFrame = Cube();
 		topFrame.localScaleMesh(glm::vec3(length, FRAME_LENGTH, width));
 		topFrame.translateMesh(glm::vec3(0.0f, height / 2.0f - FRAME_LENGTH / 2.0f, 0.0f));
-		topFrame.setTexture(Texture::getTexture("floor"), repeat, repeat);
+		topFrame.setTexture(Texture::getTexture("copper"), repeat, repeat);
 		manager.addMesh(topFrame);
 
 		Mesh bottomFrame = Cube();
 		bottomFrame.localScaleMesh(glm::vec3(length, FRAME_LENGTH, width));
 		bottomFrame.translateMesh(glm::vec3(0.0f, -height / 2.0f + FRAME_LENGTH / 2.0f, 0.0f));
-		bottomFrame.setTexture(Texture::getTexture("floor"), repeat, repeat);
+		bottomFrame.setTexture(Texture::getTexture("copper"), repeat, repeat);
 		manager.addMesh(bottomFrame);
 }
 void Painting::addCanvas() {
@@ -74,7 +73,6 @@ void Painting::addShapes() {
 
 void Painting::addRandomShape(float minusX, float x, float minusY, float y, float z)
 {
-	
 	Mesh paintingShape = Mesh();
 
 	glm::vec3 coords[3];
@@ -108,43 +106,4 @@ void Painting::addRandomShape(float minusX, float x, float minusY, float y, floa
 		128.0f };
 	paintingShape.setMaterial(m);
 	manager.addMesh(paintingShape);
-}
-
-std::vector<BoundingBox> Painting::getBoundingBox() {
-	float extraSpace = 0.135f;
-	std::vector<BoundingBox> boxes;
-	glm::vec3 max_XYZ = this->manager.finalMesh.maxXYZ;
-	glm::vec3 min_XYZ = this->manager.finalMesh.minXYZ;
-
-	BoundingBox l;
-	l.max = glm::vec3(maxXYZ.x + extraSpace, maxXYZ.y + extraSpace, maxXYZ.z + extraSpace);
-	l.min = glm::vec3(maxXYZ.x - extraSpace, min_XYZ.y - extraSpace, min_XYZ.z - extraSpace);
-	boxes.push_back(l);
-
-	BoundingBox r;
-	r.max = glm::vec3(min_XYZ.x + extraSpace, max_XYZ.y + extraSpace, max_XYZ.z + extraSpace);
-	r.min = glm::vec3(min_XYZ.x - extraSpace, min_XYZ.y - extraSpace, min_XYZ.z - extraSpace);
-	boxes.push_back(r);
-
-	BoundingBox f;
-	f.max = glm::vec3(max_XYZ.x + extraSpace, max_XYZ.y + extraSpace, max_XYZ.z + extraSpace);
-	f.min = glm::vec3(min_XYZ.x - extraSpace, min_XYZ.y - extraSpace, max_XYZ.z - extraSpace);
-	boxes.push_back(f);
-
-	BoundingBox b;
-	b.max = glm::vec3(max_XYZ.x + extraSpace, max_XYZ.y + extraSpace, min_XYZ.z + extraSpace);
-	b.min = glm::vec3(min_XYZ.x - extraSpace, min_XYZ.y - extraSpace, min_XYZ.z - extraSpace);
-	boxes.push_back(b);
-
-	BoundingBox t;
-	t.max = glm::vec3(max_XYZ.x + extraSpace, max_XYZ.y + extraSpace, max_XYZ.z + extraSpace);
-	t.min = glm::vec3(min_XYZ.x - extraSpace, max_XYZ.y - extraSpace, min_XYZ.z - extraSpace);
-	boxes.push_back(t);
-
-	BoundingBox bot;
-	bot.max = glm::vec3(max_XYZ.x + extraSpace, min_XYZ.y + extraSpace, max_XYZ.z + extraSpace);
-	bot.min = glm::vec3(min_XYZ.x - extraSpace, min_XYZ.y - extraSpace, min_XYZ.z - extraSpace);
-	boxes.push_back(bot);
-
-	return boxes;
 }

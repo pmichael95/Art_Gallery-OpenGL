@@ -57,10 +57,10 @@ uniform sampler2D wall_n;
 uniform sampler2D wall_s;
 uniform sampler2D wall_h;
 
-uniform sampler2D brick_d;
-uniform sampler2D brick_n;
-uniform sampler2D brick_s;
-uniform sampler2D brick_h;
+uniform sampler2D copper_d;
+uniform sampler2D copper_n;
+uniform sampler2D copper_s;
+uniform sampler2D copper_h;
 
 uniform sampler2D pedestal_d;
 uniform sampler2D pedestal_n;
@@ -171,12 +171,12 @@ void main() {
 		}
 
 		if (frag_textureID.x == 9) {
-			uv = ParallaxMapping(uv,  viewDir, brick_h);
-			m.ambient = vec3(texture2D(brick_d, uv));
-			m.diffuse = vec3(texture2D(brick_d, uv));
-			m.specular = vec3(texture2D(brick_s, uv));
+			uv = ParallaxMapping(uv,  viewDir, copper_h);
+			m.ambient = vec3(texture2D(copper_d, uv));
+			m.diffuse = vec3(texture2D(copper_d, uv));
+			m.specular = vec3(texture2D(copper_s, uv));
 			m.shininess = 200.0f;
-			normal = texture(brick_n, uv).rgb;
+			normal = texture(copper_n, uv).rgb;
 		}
 
 		if (frag_textureID.x == 13) {
